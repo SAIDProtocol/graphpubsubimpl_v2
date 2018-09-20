@@ -1,0 +1,20 @@
+#if you cannot find command gzcat, do the following
+sudo ln -s /bin/zcat /bin/gzcat
+
+git clone https://github.com/kohler/click.git
+
+cd click
+./configure --enable-user-multithread --disable-linuxmodule
+make
+# you will see error from gzip in the next step, ignore.
+sudo make install 
+#you should be able to man click elements now e.g., man TimedSource
+cd ..
+
+
+git clone https://github.com/SAIDProtocol/graphpubsubimpl.git
+cd graphpubsubimpl
+autoconf
+./configure
+make
+sudo make install
