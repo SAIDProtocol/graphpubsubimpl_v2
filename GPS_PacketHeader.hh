@@ -115,6 +115,38 @@ struct gps_packet_application {
 
 typedef struct gps_packet_application gps_packet_application_t;
 
+static inline const gps_guid_t *gps_packet_application_get_srcGuid(const void *pkt) {
+    return &reinterpret_cast<const gps_packet_application_t *>(pkt)->srcGuid;
+}
+
+static inline const gps_guid_t *gps_packet_application_get_dstGuid(const void *pkt) {
+    return &reinterpret_cast<const gps_packet_application_t *>(pkt)->dstGuid;
+}
+
+static inline const gps_na_t *gps_packet_application_get_srcNa(const void *pkt) {
+    return &reinterpret_cast<const gps_packet_application_t *>(pkt)->srcNa;
+}
+
+static inline const gps_na_t *gps_packet_application_get_dstNa(const void *pkt) {
+    return &reinterpret_cast<const gps_packet_application_t *>(pkt)->dstNa;
+}
+
+static inline void gps_packet_application_set_srcGuid(void *pkt, const gps_guid_t *srcGuid) {
+    gps_guid_set_val(&reinterpret_cast<gps_packet_application_t *>(pkt)->srcGuid, srcGuid);
+}
+
+static inline void gps_packet_application_set_dstGuid(void *pkt, const gps_guid_t *dstGuid) {
+    gps_guid_set_val(&reinterpret_cast<gps_packet_application_t *>(pkt)->dstGuid, dstGuid);
+}
+
+static inline void gps_packet_application_set_srcNa(void *pkt, const gps_na_t *srcNa) {
+    gps_na_set_val(&reinterpret_cast<gps_packet_application_t *>(pkt)->srcNa, srcNa);
+}
+
+static inline void gps_packet_application_set_dstNa(void *pkt, const gps_na_t *dstNa) {
+    gps_na_set_val(&reinterpret_cast<gps_packet_application_t *>(pkt)->dstNa, dstNa);
+}
+
 
 struct gps_packet_publication {
     gps_packet_application_t premable;
@@ -125,19 +157,19 @@ typedef struct gps_packet_publication gps_packet_publication_t;
 
 
 static inline const gps_guid_t *gps_packet_publication_get_srcGuid(const void *pkt) {
-    return &reinterpret_cast<const gps_packet_publication_t *>(pkt)->premable.srcGuid;
+    return gps_packet_application_get_srcGuid(&reinterpret_cast<const gps_packet_publication_t *>(pkt)->premable);
 }
 
 static inline const gps_guid_t *gps_packet_publication_get_dstGuid(const void *pkt) {
-    return &reinterpret_cast<const gps_packet_publication_t *>(pkt)->premable.dstGuid;
+    return gps_packet_application_get_dstGuid(&reinterpret_cast<const gps_packet_publication_t *>(pkt)->premable);
 }
 
 static inline const gps_na_t *gps_packet_publication_get_srcNa(const void *pkt) {
-    return &reinterpret_cast<const gps_packet_publication_t *>(pkt)->premable.srcNa;
+    return gps_packet_application_get_srcNa(&reinterpret_cast<const gps_packet_publication_t *>(pkt)->premable);
 }
 
 static inline const gps_na_t *gps_packet_publication_get_dstNa(const void *pkt) {
-    return &reinterpret_cast<const gps_packet_publication_t *>(pkt)->premable.dstNa;
+    return gps_packet_application_get_dstNa(&reinterpret_cast<const gps_packet_publication_t *>(pkt)->premable);
 }
 
 static inline uint32_t gps_packet_publication_get_size(const void *pkt) {
@@ -149,19 +181,19 @@ static inline const char *gps_packet_publication_get_payload(const void *pkt) {
 }
 
 static inline void gps_packet_publication_set_srcGuid(void *pkt, const gps_guid_t *srcGuid) {
-    gps_guid_set_val(&reinterpret_cast<gps_packet_publication_t *>(pkt)->premable.srcGuid, srcGuid);
+    gps_packet_application_set_srcGuid(&reinterpret_cast<gps_packet_publication_t *>(pkt)->premable, srcGuid);
 }
 
 static inline void gps_packet_publication_set_dstGuid(void *pkt, const gps_guid_t *dstGuid) {
-    gps_guid_set_val(&reinterpret_cast<gps_packet_publication_t *>(pkt)->premable.dstGuid, dstGuid);
+    gps_packet_application_set_dstGuid(&reinterpret_cast<gps_packet_publication_t *>(pkt)->premable, dstGuid);
 }
 
 static inline void gps_packet_publication_set_srcNa(void *pkt, const gps_na_t *srcNa) {
-    gps_na_set_val(&reinterpret_cast<gps_packet_publication_t *>(pkt)->premable.srcNa, srcNa);
+    gps_packet_application_set_srcNa(&reinterpret_cast<gps_packet_publication_t *>(pkt)->premable, srcNa);
 }
 
 static inline void gps_packet_publication_set_dstNa(void *pkt, const gps_na_t *dstNa) {
-    gps_na_set_val(&reinterpret_cast<gps_packet_publication_t *>(pkt)->premable.dstNa, dstNa);
+    gps_packet_application_set_dstNa(&reinterpret_cast<gps_packet_publication_t *>(pkt)->premable, dstNa);
 }
 
 static inline void gps_packet_publication_set_size(void *pkt, uint32_t size) {

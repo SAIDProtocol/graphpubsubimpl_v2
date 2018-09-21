@@ -187,7 +187,6 @@ void GPS_ARPTable::push(int port, Packet *p) {
             p->kill();
             break;
     }
-    printTime();
 }
 
 void GPS_ARPTable::handleData(Packet *packet) {

@@ -4,6 +4,7 @@
 
 #include "GPS_TEST_PubWrapper.hh"
 #include "GPS_PacketHeader.hh"
+#include "GPS_PacketAnno.h"
 #include <click/args.hh>
 #include <click/error.hh>
 
@@ -29,7 +30,8 @@ int GPS_TEST_PubWrapper::configure(Vector<String> &conf, ErrorHandler *errh) {
     gps_na_set_val(&_srcNa, numSrcNa);
     gps_na_set_val(&_dstNa, numDstNa);
 
-    errh->message("numSrcGuid=0x%x, numDstGuid=0x%x, numSrcNa=0x%x, numDstNa=0x%x", numSrcGuid, numDstGuid, numSrcNa, numDstNa);
+    errh->message("numSrcGuid=0x%x, numDstGuid=0x%x, numSrcNa=0x%x, numDstNa=0x%x", numSrcGuid, numDstGuid, numSrcNa,
+                  numDstNa);
     errh->message("SRC_GUID=%s, DST_GUID=%s, SRC_NA=%s, DST_NA=%s",
                   gps_guid_unparse(&_srcGuid).c_str(),
                   gps_guid_unparse(&_dstGuid).c_str(),
@@ -45,6 +47,7 @@ Packet *GPS_TEST_PubWrapper::simple_action(Packet *p) {
     auto newPkt = p->push(sizeof(gps_packet_publication_t));
 
     gps_packet_publication_init(newPkt->data(), &_srcGuid, &_dstGuid, &_srcNa, &_dstNa, payloadSize);
+    *PRIO_ANNO(p) = GPS_PACKET_PRIO_PUBLICATION;
 
     return p;
 }

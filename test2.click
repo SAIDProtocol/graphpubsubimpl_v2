@@ -20,6 +20,7 @@ arpQueue
 	-> GPS_TEST_PrintPacket(LABEL "[0]ArpTable.data")
 	-> GPS_TEST_PrintAnno("[0]ArpTable.anno")
 	-> arpTable
+	-> outQueue;
 
 outQueue
     -> outUnqueue::Unqueue
@@ -38,8 +39,21 @@ arpTable[1]
 	-> Discard;
 
 
-ts1::TimedSource(1, "aaaaaaa", LIMIT 1, HEADROOM 96)
-	-> GPS_TEST_PubWrapper(DST_GUID 0x223, DST_NA 0x00000242)
+TimedSource(1, "aaaaaaa", LIMIT 1, HEADROOM 96)
+	-> GPS_TEST_PubWrapper(DST_GUID 0x223, DST_NA 0x242)
 	-> routingQueue;
 
-//StaticThreadSched(ts1 1, ts2 2, ts3 3, ts4 4, arpUnqueue 5);
+TimedSource(2, "aaaaaaaa", LIMIT 1, HEADROOM 96)
+	-> GPS_TEST_PubWrapper(DST_GUID 0x223, DST_NA 0x134)
+	-> routingQueue;
+
+TimedSource(3, "aaaaaaaaa", LIMIT 1, HEADROOM 96)
+	-> GPS_TEST_PubWrapper(DST_GUID 0x223, DST_NA 0x135)
+	-> routingQueue;
+
+TimedSource(4, "aaaaaaaaaa", LIMIT 1, HEADROOM 96)
+	-> GPS_TEST_PubWrapper(DST_GUID 0x223, DST_NA 0x136)
+	-> routingQueue;
+
+
+StaticThreadSched(routingUnqueue 1, arpUnqueue 2, outUnqueue 3);
