@@ -2,8 +2,8 @@
 // Created by ubuntu on 9/21/18.
 //
 
-#ifndef CLICK_V2_GPS_GNRSCACHE_HH
-#define CLICK_V2_GPS_GNRSCACHE_HH
+#ifndef CLICK_GPS_GNRSCACHE_HH
+#define CLICK_GPS_GNRSCACHE_HH
 
 #include <click/config.h>
 #include <click/element.hh>
@@ -94,4 +94,4 @@ private:
 
 CLICK_ENDDECLS
 
-#endif //CLICK_V2_GPS_GNRSCACHE_HH
+#endif //CLICK_GPS_GNRSCACHE_HH
