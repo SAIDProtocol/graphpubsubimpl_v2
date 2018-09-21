@@ -21,7 +21,7 @@ public:
     static const int IN_PORT_DATA = 0;
     static const int OUT_PORT_TO_SUBSCRIBERS = 0;
     static const int OUT_PORT_TO_OTHER_RP = 1;
-    static const int OUT_PORT_DISCARD = 2;
+//    static const int OUT_PORT_DISCARD = 2;
 
     GPS_RP() CLICK_COLD;
 
@@ -30,7 +30,7 @@ public:
 
     const char *class_name() const override { return "GPS_RP"; };
 
-    const char *port_count() const override { return "-1/-3"; };
+    const char *port_count() const override { return "-1/-2"; };
 
     const char *processing() const override { return PUSH; };
 
