@@ -70,7 +70,7 @@ static inline const gps_na_t *gps_packet_lsa_get_intermediateNa(const void *pkt)
 }
 
 static inline uint32_t gps_packet_lsa_get_nonce(const void *pkt) {
-    return reinterpret_cast<const gps_packet_lsa *>(pkt)->nonce;
+    return ntohl(reinterpret_cast<const gps_packet_lsa *>(pkt)->nonce);
 }
 
 static inline void gps_packet_lsa_set_srcNa(void *pkt, const gps_na_t *srcNa) {
@@ -82,7 +82,7 @@ static inline void gps_packet_lsa_set_intermediateNa(void *pkt, const gps_na_t *
 }
 
 static inline void gps_packet_lsa_set_nonce(void *pkt, uint32_t nonce) {
-    reinterpret_cast<gps_packet_lsa *>(pkt)->nonce = nonce;
+    reinterpret_cast<gps_packet_lsa *>(pkt)->nonce = htonl(nonce);
 }
 
 static inline void
@@ -240,19 +240,19 @@ struct gps_packet_subscription {
 typedef struct gps_packet_subscription gps_packet_subscription_t;
 
 static inline const gps_guid_t *gps_packet_subscription_get_srcGuid(const void *pkt) {
-    return &reinterpret_cast<const gps_packet_subscription_t *>(pkt)->premable.srcGuid;
+    return gps_packet_application_get_srcGuid(&reinterpret_cast<const gps_packet_subscription_t *>(pkt)->premable);
 }
 
 static inline const gps_guid_t *gps_packet_subscription_get_dstGuid(const void *pkt) {
-    return &reinterpret_cast<const gps_packet_subscription_t *>(pkt)->premable.dstGuid;
+    return gps_packet_application_get_dstGuid(&reinterpret_cast<const gps_packet_subscription_t *>(pkt)->premable);
 }
 
 static inline const gps_na_t *gps_packet_subscription_get_srcNa(const void *pkt) {
-    return &reinterpret_cast<const gps_packet_subscription_t *>(pkt)->premable.srcNa;
+    return gps_packet_application_get_srcNa(&reinterpret_cast<const gps_packet_subscription_t *>(pkt)->premable);
 }
 
 static inline const gps_na_t *gps_packet_subscription_get_dstNa(const void *pkt) {
-    return &reinterpret_cast<const gps_packet_subscription_t *>(pkt)->premable.dstNa;
+    return gps_packet_application_get_dstNa(&reinterpret_cast<const gps_packet_subscription_t *>(pkt)->premable);
 }
 
 static inline bool gps_packet_subscription_is_subscribe(const void *pkt) {
@@ -260,19 +260,19 @@ static inline bool gps_packet_subscription_is_subscribe(const void *pkt) {
 }
 
 static inline void gps_packet_subscription_set_srcGuid(void *pkt, const gps_guid_t *srcGuid) {
-    gps_guid_set_val(&reinterpret_cast<gps_packet_subscription_t *>(pkt)->premable.srcGuid, srcGuid);
+    gps_packet_application_set_srcGuid(&reinterpret_cast<gps_packet_subscription_t *>(pkt)->premable, srcGuid);
 }
 
 static inline void gps_packet_subscription_set_dstGuid(void *pkt, const gps_guid_t *dstGuid) {
-    gps_guid_set_val(&reinterpret_cast<gps_packet_subscription_t *>(pkt)->premable.dstGuid, dstGuid);
+    gps_packet_application_set_dstGuid(&reinterpret_cast<gps_packet_subscription_t *>(pkt)->premable, dstGuid);
 }
 
 static inline void gps_packet_subscription_set_srcNa(void *pkt, const gps_na_t *srcNa) {
-    gps_na_set_val(&reinterpret_cast<gps_packet_subscription_t *>(pkt)->premable.srcNa, srcNa);
+    gps_packet_application_set_srcNa(&reinterpret_cast<gps_packet_subscription_t *>(pkt)->premable, srcNa);
 }
 
 static inline void gps_packet_subscription_set_dstNa(void *pkt, const gps_na_t *dstNa) {
-    gps_na_set_val(&reinterpret_cast<gps_packet_subscription_t *>(pkt)->premable.dstNa, dstNa);
+    gps_packet_application_set_dstNa(&reinterpret_cast<gps_packet_subscription_t *>(pkt)->premable, dstNa);
 }
 
 static inline void gps_packet_subscription_set_subscribe(void *pkt, bool subscribe) {
@@ -315,7 +315,65 @@ struct gps_packet_gnrsRequest {
     // premable.dstNa -> gnrsNa (dst)
     gps_packet_application_t premable;
 } CLICK_SIZE_PACKED_ATTRIBUTE;
+
 typedef struct gps_packet_gnrsRequest gps_packet_gnrsRequest_t;
+
+static inline const gps_guid_t *gps_packet_gnrsRequest_get_srcGuid(const void *pkt) {
+    return gps_packet_application_get_srcGuid(&reinterpret_cast<const gps_packet_gnrsRequest_t *>(pkt)->premable);
+}
+
+static inline const gps_guid_t *gps_packet_gnrsRequest_get_dstGuid(const void *pkt) {
+    return gps_packet_application_get_dstGuid(&reinterpret_cast<const gps_packet_gnrsRequest_t *>(pkt)->premable);
+}
+
+static inline const gps_na_t *gps_packet_gnrsRequest_get_srcNa(const void *pkt) {
+    return gps_packet_application_get_srcNa(&reinterpret_cast<const gps_packet_gnrsRequest_t *>(pkt)->premable);
+}
+
+static inline const gps_na_t *gps_packet_gnrsRequest_get_dstNa(const void *pkt) {
+    return gps_packet_application_get_dstNa(&reinterpret_cast<const gps_packet_gnrsRequest_t *>(pkt)->premable);
+}
+
+static inline void gps_packet_gnrsRequest_set_srcGuid(void *pkt, const gps_guid_t *srcGuid) {
+    gps_packet_application_set_srcGuid(&reinterpret_cast<gps_packet_gnrsRequest_t *>(pkt)->premable, srcGuid);
+}
+
+static inline void gps_packet_gnrsRequest_set_dstGuid(void *pkt, const gps_guid_t *dstGuid) {
+    gps_packet_application_set_dstGuid(&reinterpret_cast<gps_packet_gnrsRequest_t *>(pkt)->premable, dstGuid);
+}
+
+static inline void gps_packet_gnrsRequest_set_srcNa(void *pkt, const gps_na_t *srcNa) {
+    gps_packet_application_set_srcNa(&reinterpret_cast<gps_packet_gnrsRequest_t *>(pkt)->premable, srcNa);
+}
+
+static inline void gps_packet_gnrsRequest_set_dstNa(void *pkt, const gps_na_t *dstNa) {
+    gps_packet_application_set_dstNa(&reinterpret_cast<gps_packet_gnrsRequest_t *>(pkt)->premable, dstNa);
+}
+
+
+static inline void
+gps_packet_gnrsRequest_init(void *pkt, const gps_guid_t *requestGuid, const gps_na_t *srcNa, const gps_na_t *dstNa) {
+    gps_packet_set_type(pkt, GPS_PACKET_TYPE_GNRS_REQ);
+    gps_guid_clear(&reinterpret_cast<gps_packet_gnrsRequest *>(pkt)->premable.srcGuid);
+    gps_packet_gnrsRequest_set_dstGuid(pkt, requestGuid);
+    gps_packet_gnrsRequest_set_srcNa(pkt, srcNa);
+    gps_packet_gnrsRequest_set_dstNa(pkt, dstNa);
+}
+
+static inline void gps_packet_gnrsRequest_print(const void *pkt, const String &label) {
+    const gps_guid_t *srcGuid = gps_packet_gnrsRequest_get_srcGuid(pkt),
+            *dstGuid = gps_packet_gnrsRequest_get_dstGuid(pkt);
+    const gps_na_t *srcNa = gps_packet_gnrsRequest_get_srcNa(pkt),
+            *dstNa = gps_packet_gnrsRequest_get_dstNa(pkt);
+    click_chatter(
+            "%s: GNRS_REQUEST srcGuid(empty)=%s | dstGuid(request)=%s | srcNa=%s | dstNa=%s",
+            label.c_str(),
+            gps_guid_unparse(srcGuid).c_str(),
+            gps_guid_unparse(dstGuid).c_str(),
+            gps_na_unparse(srcNa).c_str(),
+            gps_na_unparse(dstNa).c_str());
+}
+
 
 struct gps_packet_gnrsResponse {
     // premable.srcGuid -> requestedGuid
@@ -327,7 +385,98 @@ struct gps_packet_gnrsResponse {
     uint32_t version;
     uint32_t nonce;
 } CLICK_SIZE_PACKED_ATTRIBUTE;
+
 typedef struct gps_packet_gnrsResponse gps_packet_gnrsResponse_t;
+
+static inline const gps_guid_t *gps_packet_gnrsResponse_get_srcGuid(const void *pkt) {
+    return gps_packet_application_get_srcGuid(&reinterpret_cast<const gps_packet_gnrsResponse_t *>(pkt)->premable);
+}
+
+static inline const gps_guid_t *gps_packet_gnrsResponse_get_dstGuid(const void *pkt) {
+    return gps_packet_application_get_dstGuid(&reinterpret_cast<const gps_packet_gnrsResponse_t *>(pkt)->premable);
+}
+
+static inline const gps_na_t *gps_packet_gnrsResponse_get_srcNa(const void *pkt) {
+    return gps_packet_application_get_srcNa(&reinterpret_cast<const gps_packet_gnrsResponse_t *>(pkt)->premable);
+}
+
+static inline const gps_na_t *gps_packet_gnrsResponse_get_dstNa(const void *pkt) {
+    return gps_packet_application_get_dstNa(&reinterpret_cast<const gps_packet_gnrsResponse_t *>(pkt)->premable);
+}
+
+static inline const gps_na_t *gps_packet_gnrsResponse_get_requestedGuidNa(const void *pkt) {
+    return &reinterpret_cast<const gps_packet_gnrsResponse_t *>(pkt)->requestedGuidNa;
+}
+
+static inline uint32_t gps_packet_gnrsResponse_get_version(const void *pkt) {
+    return ntohl(reinterpret_cast<const gps_packet_gnrsResponse_t *>(pkt)->version);
+}
+
+static inline uint32_t gps_packet_gnrsResponse_get_nonce(const void *pkt) {
+    return ntohl(reinterpret_cast<const gps_packet_gnrsResponse_t *>(pkt)->nonce);
+}
+
+static inline void gps_packet_gnrsResponse_set_srcGuid(void *pkt, const gps_guid_t *srcGuid) {
+    gps_packet_application_set_srcGuid(&reinterpret_cast<gps_packet_gnrsResponse_t *>(pkt)->premable, srcGuid);
+}
+
+static inline void gps_packet_gnrsResponse_set_dstGuid(void *pkt, const gps_guid_t *dstGuid) {
+    gps_packet_application_set_dstGuid(&reinterpret_cast<gps_packet_gnrsResponse_t *>(pkt)->premable, dstGuid);
+}
+
+static inline void gps_packet_gnrsResponse_set_srcNa(void *pkt, const gps_na_t *srcNa) {
+    gps_packet_application_set_srcNa(&reinterpret_cast<gps_packet_gnrsResponse_t *>(pkt)->premable, srcNa);
+}
+
+static inline void gps_packet_gnrsResponse_set_dstNa(void *pkt, const gps_na_t *dstNa) {
+    gps_packet_application_set_dstNa(&reinterpret_cast<gps_packet_gnrsResponse_t *>(pkt)->premable, dstNa);
+}
+
+static inline void gps_packet_gnrsResponse_set_requestedGuidNa(void *pkt, const gps_na_t *requestedGuidNa) {
+    gps_na_set_val(&reinterpret_cast<gps_packet_gnrsResponse_t *>(pkt)->requestedGuidNa, requestedGuidNa);
+}
+
+static inline void gps_packet_gnrsResponse_set_version(void *pkt, uint32_t version) {
+    reinterpret_cast<gps_packet_gnrsResponse_t *>(pkt)->version = htonl(version);
+}
+
+static inline void gps_packet_gnrsResponse_set_nonce(void *pkt, uint32_t nonce) {
+    reinterpret_cast<gps_packet_gnrsResponse_t *>(pkt)->nonce = htonl(nonce);
+}
+
+static inline void
+gps_packet_gnrsResponse_init(void *pkt, const gps_guid_t *requestGuid, const gps_na_t *srcNa, const gps_na_t *dstNa,
+                             const gps_na_t *requestedGuidNa, uint32_t version, uint32_t nonce) {
+    gps_packet_set_type(pkt, GPS_PACKET_TYPE_GNRS_RESP);
+    gps_packet_gnrsResponse_set_srcGuid(pkt, requestGuid);
+    gps_guid_clear(&reinterpret_cast<gps_packet_gnrsRequest *>(pkt)->premable.dstGuid);
+    gps_packet_gnrsResponse_set_srcNa(pkt, srcNa);
+    gps_packet_gnrsResponse_set_dstNa(pkt, dstNa);
+    gps_packet_gnrsResponse_set_requestedGuidNa(pkt, requestedGuidNa);
+    gps_packet_gnrsResponse_set_version(pkt, version);
+    gps_packet_gnrsResponse_set_nonce(pkt, nonce);
+}
+
+static inline void gps_packet_gnrsResponse_print(const void *pkt, const String &label) {
+    const gps_guid_t *srcGuid = gps_packet_gnrsResponse_get_srcGuid(pkt),
+            *dstGuid = gps_packet_gnrsResponse_get_dstGuid(pkt);
+    const gps_na_t *srcNa = gps_packet_gnrsResponse_get_srcNa(pkt),
+            *dstNa = gps_packet_gnrsResponse_get_dstNa(pkt),
+            *requestedGuidNa = gps_packet_gnrsResponse_get_requestedGuidNa(pkt);
+    uint32_t version = gps_packet_gnrsResponse_get_version(pkt),
+            nonce = gps_packet_gnrsResponse_get_nonce(pkt);
+
+    click_chatter(
+            "%s: GNRS_RESPONSE srcGuid(request)=%s | dstGuid(empty)=%s | srcNa=%s | dstNa=%s | requestedGuidNa=%s | version=0x%08x | nonce=0x%08x",
+            label.c_str(),
+            gps_guid_unparse(srcGuid).c_str(),
+            gps_guid_unparse(dstGuid).c_str(),
+            gps_na_unparse(srcNa).c_str(),
+            gps_na_unparse(dstNa).c_str(),
+            gps_na_unparse(requestedGuidNa).c_str(),
+            version,
+            nonce);
+}
 
 struct gps_packet_gnrsAssociate {
     // premable.srcGuid -> requestedGuid

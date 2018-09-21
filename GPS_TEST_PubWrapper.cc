@@ -41,7 +41,7 @@ int GPS_TEST_PubWrapper::configure(Vector<String> &conf, ErrorHandler *errh) {
 }
 
 Packet *GPS_TEST_PubWrapper::simple_action(Packet *p) {
-    uint32_t payloadSize = p->length();
+    auto payloadSize = p->length();
 
 
     auto newPkt = p->push(sizeof(gps_packet_publication_t));

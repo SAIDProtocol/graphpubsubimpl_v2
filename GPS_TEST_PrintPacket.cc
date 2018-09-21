@@ -26,8 +26,8 @@ Packet *GPS_TEST_PrintPacket::simple_action(Packet *p) {
     if (p->length() < sizeof(gps_packet_t)) {
         click_chatter("%s: error packet length (%d) < %d", _label.c_str(), p->length(), sizeof(gps_packet_t));
     } else {
-        const uint8_t *header = p->data();
-        uint8_t type = gps_packet_get_type(header);
+        auto header = p->data();
+        auto type = gps_packet_get_type(header);
         switch (type) {
             case GPS_PACKET_TYPE_LSA:
                 if (p->length() < sizeof(gps_packet_lsa_t)) {
@@ -53,6 +53,23 @@ Packet *GPS_TEST_PrintPacket::simple_action(Packet *p) {
                     gps_packet_subscription_print(header, _label);
                 }
                 break;
+            case GPS_PACKET_TYPE_GNRS_REQ:
+                if (p->length() < sizeof(gps_packet_gnrsRequest_t)) {
+                    click_chatter("%s: SUBSCRIPTION error packet length (%d) < %d", _label.c_str(), p->length(),
+                                  sizeof(gps_packet_gnrsRequest_t));
+                } else {
+                    gps_packet_gnrsRequest_print(header, _label);
+                }
+                break;
+            case GPS_PACKET_TYPE_GNRS_RESP:
+                if (p->length() < sizeof(gps_packet_gnrsResponse_t)) {
+                    click_chatter("%s: GNRS_RESPONSE error packet length (%d) < %d", _label.c_str(), p->length(),
+                                  sizeof(gps_packet_gnrsResponse_t));
+                } else {
+                    gps_packet_gnrsResponse_print(header, _label);
+                }
+                break;
+
             default:
                 click_chatter("%s: unknown packet type: 0x%02x", _label.c_str(), type);
                 break;

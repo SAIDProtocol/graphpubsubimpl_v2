@@ -59,7 +59,7 @@ void GPS_RoutingTable::push(int port, Packet *p) {
             break;
         default:
             // from other ports?? should not reach here!
-            click_chatter("Got packet from unexpected port: %d, discarding...", port);
+            click_chatter("[GPS_RoutingTable::push] Got packet from unexpected port: %d, discarding...", port);
             p->kill();
             break;
     }
@@ -178,15 +178,15 @@ int GPS_RoutingTable::parseArgFile(const String &fileName, ErrorHandler *errh) {
 
 void GPS_RoutingTable::handleData(Packet *p) {
 
-    const unsigned char *header = p->data();
+    auto header = p->data();
     if (unlikely(!gps_packet_is_application(header))) {
-        click_chatter("Error packet type: 0x%x, should match mask: 0x%x", gps_packet_get_type(p),
+        click_chatter("[GPS_RoutingTable::handleData] Error packet type: 0x%x, should match mask: 0x%x", gps_packet_get_type(p),
                       GPS_PACKET_TYPE_APPLICATION_MASK);
         p->kill();
         return;
     }
 
-    const gps_na_t *dstNa = gps_packet_application_get_dstNa(header);
+    auto dstNa = gps_packet_application_get_dstNa(header);
 
 
     if (unlikely(gps_na_is_broadcast(dstNa))) {

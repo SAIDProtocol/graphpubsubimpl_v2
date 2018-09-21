@@ -133,7 +133,7 @@ void GPS_SubscriptionTable::push(int port, Packet *p) {
             break;
         default:
             // from other ports?? should not reach here!
-            click_chatter("Got packet from unexpected port: %d, discarding...", port);
+            click_chatter("[GPS_SubscriptionTable::push] Got packet from unexpected port: %d, discarding...", port);
             p->kill();
             break;
     }
@@ -141,12 +141,12 @@ void GPS_SubscriptionTable::push(int port, Packet *p) {
 
 void GPS_SubscriptionTable::handlePublication(Packet *packet) {
     //    Publication
-    const unsigned char *header = packet->data();
-    uint8_t type = gps_packet_get_type(header);
+    auto header = packet->data();
+    auto type = gps_packet_get_type(header);
     //check type
     if (unlikely(type != GPS_PACKET_TYPE_PUBLICATION)) {
         // Error! got a packet that is not publication!
-        click_chatter("Error packet type: 0x%x, should be publication: 0x%x", type, GPS_PACKET_TYPE_PUBLICATION);
+        click_chatter("[GPS_SubscriptionTable::handlePublication] Error packet type: 0x%x, should be publication: 0x%x", type, GPS_PACKET_TYPE_PUBLICATION);
         packet->kill();
         return;
     }
@@ -159,10 +159,10 @@ void GPS_SubscriptionTable::handlePublication(Packet *packet) {
         checked_output_push(OUT_PORT_PUBLICATION_DISCARD, packet);
     } else {
 
-        bool hasSub = false;
+        auto hasSub = false;
         for (auto &it2 : it->second) {
             hasSub = true;
-            Packet *toForward = packet->clone();
+            auto toForward = packet->clone();
             //            click_chatter("p_in: %p, p_in.data: %p, packet: %p, anno: %p, data: %p",
             //                    packet, packet->data(), toForward, NEXT_HOP_NA_ANNO(toForward), toForward->data());
             gps_na_set_val(NEXT_HOP_NA_ANNO(toForward), &it2);
@@ -177,11 +177,11 @@ void GPS_SubscriptionTable::handlePublication(Packet *packet) {
 }
 
 void GPS_SubscriptionTable::handleSubscription(Packet *packet) {
-    const unsigned char *header = packet->data();
-    uint8_t type = gps_packet_get_type(header);
+    auto header = packet->data();
+    auto type = gps_packet_get_type(header);
     if (unlikely(type != GPS_PACKET_TYPE_SUBSCRIPTION)) {
         // Error! got a packet that is not publication!
-        click_chatter("Error packet type: 0x%x, should be subscription: 0x%x", type, GPS_PACKET_TYPE_SUBSCRIPTION);
+        click_chatter("[GPS_SubscriptionTable::handleSubscription] Error packet type: 0x%x, should be subscription: 0x%x", type, GPS_PACKET_TYPE_SUBSCRIPTION);
         packet->kill();
         return;
     }

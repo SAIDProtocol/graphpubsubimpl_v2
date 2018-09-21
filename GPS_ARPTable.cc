@@ -183,7 +183,7 @@ void GPS_ARPTable::push(int port, Packet *p) {
             break;
         default:
             // from other ports?? should not reach here!
-            click_chatter("Got packet from unexpected port: %d, discarding...", port);
+            click_chatter("[GPS_ARPTable::push] Got packet from unexpected port: %d, discarding...", port);
             p->kill();
             break;
     }
