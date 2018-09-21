@@ -43,7 +43,7 @@ int GPS_RoutingTable::configure(Vector<String> &conf, ErrorHandler *errh) {
                         gps_na_unparse(&it1.first).c_str(),
                         gps_na_unparse(it1.second.getMinNextHop()).c_str(),
                         it1.second.getMinDistance(),
-                        sa.take_string().c_str()
+                        sa.c_str()
             );
         }
     }
@@ -77,7 +77,7 @@ int GPS_RoutingTable::parseArgFile(const String &fileName, ErrorHandler *errh) {
     ssize_t pos;
 
     IntArg numArg;
-    uint32_t numDstNa, numNextHopNa, distance;
+    uint32_t numDstNa = 0, numNextHopNa = 0, distance = 0;
     gps_na_t dstNa, nextHopNa;
 
 

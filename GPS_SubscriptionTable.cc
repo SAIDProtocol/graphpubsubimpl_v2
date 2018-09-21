@@ -30,7 +30,7 @@ int GPS_SubscriptionTable::parseArgFile(const String &fileName, ErrorHandler *er
     ssize_t pos;
 
     IntArg numArg;
-    uint32_t numGuid, numNa;
+    uint32_t numGuid = 0, numNa = 0;
     gps_guid_t guid;
     gps_na_t na;
 
@@ -116,7 +116,7 @@ int GPS_SubscriptionTable::configure(Vector<String> &conf, ErrorHandler *errh) {
                 sa.append(" ");
                 sa.append(gps_na_unparse(&it2).c_str());
             }
-            errh->message("%s ->%s", gps_guid_unparse(&it1.first).c_str(), sa.take_string().c_str());
+            errh->message("%s ->%s", gps_guid_unparse(&it1.first).c_str(), sa.c_str());
         }
     }
 
