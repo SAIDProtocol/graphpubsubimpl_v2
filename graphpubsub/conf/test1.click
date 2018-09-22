@@ -5,8 +5,8 @@ subQueue::ThreadSafeQueue(65536);
 arpQueue::ThreadSafeQueue(65536);
 outQueue::ThreadSafeQueue(65536);
 
-subTable::GPS_SubscriptionTable(FILENAME test.sub);
-arpTable::GPS_ARPTable(FILENAME test.arp)
+subTable::GPS_SubscriptionTable(FILENAME $subFile);
+arpTable::GPS_ARPTable(FILENAME $arpFile)
 
 subQueue
 	-> subUnqueue::Unqueue
