@@ -28,12 +28,12 @@ Packet *GPS_TEST_PrintAnno::simple_action(Packet *p_in) {
     click_chatter(
             "%s: srcIp=%s | srcEther=%s | srcPort=%d |  nextHopNa=%s | nextHopIp=%s | nextHopEther=%s | nextHopPort=%d | prio=%d",
             _label.c_str(),
-            reinterpret_cast<IPAddress *> (SRC_IP_ANNO(p_in))->unparse().c_str(),
-            reinterpret_cast<EtherAddress *> (SRC_ETHER_ANNO(p_in))->unparse_colon().c_str(),
+            IPAddress(SRC_IP_ANNO(p_in)).unparse().c_str(),
+            EtherAddress(SRC_ETHER_ANNO(p_in)).unparse_colon().c_str(),
             *SRC_PORT_ANNO(p_in),
             gps_na_unparse(NEXT_HOP_NA_ANNO(p_in)).c_str(),
-            reinterpret_cast<IPAddress *> (NEXT_HOP_IP_ANNO(p_in))->unparse().c_str(),
-            reinterpret_cast<EtherAddress *> (NEXT_HOP_ETHER_ANNO(p_in))->unparse_colon().c_str(),
+            IPAddress(NEXT_HOP_IP_ANNO(p_in)).unparse().c_str(),
+            EtherAddress(NEXT_HOP_ETHER_ANNO(p_in)).unparse_colon().c_str(),
             *NEXT_HOP_PORT_ANNO(p_in),
             *PRIO_ANNO(p_in));
     return p_in;

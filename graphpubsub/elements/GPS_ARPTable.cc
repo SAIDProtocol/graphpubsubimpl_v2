@@ -4,7 +4,7 @@
 
 #include "GPS_ARPTable.hh"
 #include "GPS_GUID.hh"
-#include "GPS_Helper.h"
+#include "GPS_Helper.hh"
 #include "GPS_PacketAnno.h"
 #include <click/error.hh>
 #include <click/args.hh>

@@ -3,7 +3,7 @@
 //
 
 #include "GPS_RoutingTable.hh"
-#include "GPS_Helper.h"
+#include "GPS_Helper.hh"
 #include "GPS_PacketHeader.hh"
 #include "GPS_PacketAnno.h"
 #include <click/args.hh>

@@ -3,7 +3,7 @@
 //
 
 #include "GPS_RP.hh"
-#include "GPS_Helper.h"
+#include "GPS_Helper.hh"
 #include "GPS_PacketHeader.hh"
 #include <click/error.hh>
 #include <click/args.hh>

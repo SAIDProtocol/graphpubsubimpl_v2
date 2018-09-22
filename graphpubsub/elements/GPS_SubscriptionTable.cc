@@ -4,7 +4,7 @@
 
 #include "GPS_SubscriptionTable.hh"
 #include "GPS_PacketHeader.hh"
-#include "GPS_Helper.h"
+#include "GPS_Helper.hh"
 #include "GPS_PacketAnno.h"
 #include <click/args.hh>
 #include <click/error.hh>

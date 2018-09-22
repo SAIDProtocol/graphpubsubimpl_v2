@@ -2,14 +2,18 @@
 // Created by jiachen on 9/20/18.
 //
 
-#ifndef CLICK_GPS_HELPER_H
-#define CLICK_GPS_HELPER_H
+#ifndef CLICK_GPS_HELPER_HH
+#define CLICK_GPS_HELPER_HH
 
-#include <click/cxxprotect.h>
+#include <click/config.h>
+#include <click/glue.hh>
+#include <cstdint>
+#include <cstring>
+#include <ctime>
 #include <sys/types.h>
 #include <sys/time.h>
 
-CLICK_CXX_PROTECT
+CLICK_DECLS
 
 static inline ssize_t skipEmpty(const char *line) {
     char c;
@@ -49,8 +53,10 @@ static inline void printTime() {
 
 }
 
-CLICK_CXX_UNPROTECT
+static inline void copyEther(uint8_t *target, const uint8_t *src) {
+    memcpy(target, src, 6);
+}
 
-#include <click/cxxunprotect.h>
+CLICK_ENDDECLS
 
-#endif //CLICK_GPS_HELPER_H
+#endif //CLICK_GPS_HELPER_HH
