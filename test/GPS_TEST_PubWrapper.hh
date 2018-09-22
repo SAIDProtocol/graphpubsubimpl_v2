@@ -9,8 +9,8 @@
 #include <click/element.hh>
 #include <click/glue.hh>
 
-#include "GPS_GUID.hh"
-#include "GPS_NA.hh"
+#include "../elements/GPS_GUID.hh"
+#include "../elements/GPS_NA.hh"
 
 CLICK_DECLS
 

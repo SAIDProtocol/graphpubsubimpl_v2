@@ -3,8 +3,8 @@
 //
 
 #include "GPS_TEST_PrintAnno.hh"
-#include "GPS_NA.hh"
-#include "GPS_PacketAnno.h"
+#include "../elements/GPS_NA.hh"
+#include "../elements/GPS_PacketAnno.h"
 #include <click/args.hh>
 #include <click/etheraddress.hh>
 #include <click/ipaddress.hh>

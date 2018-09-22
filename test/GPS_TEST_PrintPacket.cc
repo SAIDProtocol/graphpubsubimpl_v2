@@ -3,7 +3,7 @@
 //
 
 #include "GPS_TEST_PrintPacket.hh"
-#include "GPS_PacketHeader.hh"
+#include "../elements/GPS_PacketHeader.hh"
 #include <click/args.hh>
 
 CLICK_DECLS

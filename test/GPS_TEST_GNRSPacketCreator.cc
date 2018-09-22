@@ -3,8 +3,8 @@
 //
 
 #include "GPS_TEST_GNRSPacketCreator.hh"
-#include "GPS_PacketHeader.hh"
-#include "GPS_PacketAnno.h"
+#include "../elements/GPS_PacketHeader.hh"
+#include "../elements/GPS_PacketAnno.h"
 #include <click/args.hh>
 #include <click/error.hh>
 
