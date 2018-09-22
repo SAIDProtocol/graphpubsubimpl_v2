@@ -1,0 +1,14 @@
+cmake-build-debug/*
+CMakeLists.txt
+build/*.u.d
+build/*.u.o
+build/autom4te.cache/*
+build/configure
+build/Makefile
+build/config.*
+build/*.mk
+build/*.conf
+build/*.cc
+build/*.uo
+build/*.xml
+.idea/*

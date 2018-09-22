@@ -11,8 +11,9 @@ sudo make install
 #you should be able to man click elements now e.g., man TimedSource
 cd ..
 
+
 git clone https://github.com/SAIDProtocol/graphpubsubimpl_v2.git
-cd graphpubsubimpl_v2/graphpubsub/build
+cd graphpubsubimpl_v2/hierarchical/build
 autoconf
 ./configure --srcdir=../
 make
