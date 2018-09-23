@@ -3,7 +3,6 @@ require(package "graphpubsub");
 
 subQueue::ThreadSafeQueue(65536);
 arpQueue::ThreadSafeQueue(65536);
-outQueue::ThreadSafeQueue(65536);
 
 subTable::GPS_SubscriptionTable(FILENAME $subFile);
 arpTable::GPS_ARPTable(FILENAME $arpFile)
@@ -19,12 +18,77 @@ arpQueue
 	-> arpUnqueue::Unqueue
 	-> GPS_TEST_PrintAnno("[0]arpTable.anno")
 	-> arpTable
-	-> outQueue;
-
-outQueue
-	-> outUnqueue::Unqueue
 	-> GPS_TEST_PrintAnno("ArpTable[0].anno")
-	-> Discard
+	-> portSwitch::GPS_PortSwitch;
+
+portSwitch[0]
+	-> GPS_TEST_PrintPacket(LABEL "[0]portSwitch.data")
+	-> Discard;
+
+
+portSwitch[1]
+	-> GPS_TEST_PrintPacket(LABEL "[1]portSwitch.data")
+	-> GPS_TEST_PrintAnno("[1]portSwitch.anno")
+	-> GPS_EtherEncap(MY_ETHER $ether)
+	-> Print(LABEL "[1]EtherEncap.data", MAXLENGTH 100)
+	-> Discard;
+
+portSwitch[2]
+	-> GPS_TEST_PrintPacket(LABEL "[2]portSwitch.data")
+	-> GPS_TEST_PrintAnno("[2]portSwitch.anno")
+	-> GPS_EtherEncap(MY_ETHER $ether)
+	-> Print(LABEL "[2]EtherEncap.data", MAXLENGTH 100)
+	-> Discard;
+
+portSwitch[3]
+	-> GPS_TEST_PrintPacket(LABEL "[3]portSwitch.data")
+	-> GPS_TEST_PrintAnno("[3]portSwitch.anno")
+	-> GPS_EtherEncap(MY_ETHER $ether)
+	-> Print(LABEL "[3]EtherEncap.data", MAXLENGTH 100)
+	-> Discard;
+
+portSwitch[4]
+	-> GPS_TEST_PrintPacket(LABEL "[4]portSwitch.data")
+	-> GPS_TEST_PrintAnno("[4]portSwitch.anno")
+	-> GPS_EtherEncap(MY_ETHER $ether)
+	-> Print(LABEL "[4]EtherEncap.data", MAXLENGTH 100)
+	-> Discard;
+
+portSwitch[5]
+	-> GPS_TEST_PrintPacket(LABEL "[5]portSwitch.data")
+	-> GPS_TEST_PrintAnno("[5]portSwitch.anno")
+	-> GPS_EtherEncap(MY_ETHER $ether)
+	-> Print(LABEL "[5]EtherEncap.data", MAXLENGTH 100)
+	-> Discard;
+
+portSwitch[6]
+	-> GPS_TEST_PrintPacket(LABEL "[6]portSwitch.data")
+	-> GPS_TEST_PrintAnno("[6]portSwitch.anno")
+	-> GPS_EtherEncap(MY_ETHER $ether)
+	-> Print(LABEL "[6]EtherEncap.data", MAXLENGTH 100)
+	-> Discard;
+
+portSwitch[7]
+	-> GPS_TEST_PrintPacket(LABEL "[7]portSwitch.data")
+	-> GPS_TEST_PrintAnno("[7]portSwitch.anno")
+	-> GPS_EtherEncap(MY_ETHER $ether)
+	-> Print(LABEL "[7]EtherEncap.data", MAXLENGTH 100)
+	-> Discard;
+
+portSwitch[8]
+	-> GPS_TEST_PrintPacket(LABEL "[8]portSwitch.data")
+	-> GPS_TEST_PrintAnno("[8]portSwitch.anno")
+	-> GPS_EtherEncap(MY_ETHER $ether)
+	-> Print(LABEL "[8]EtherEncap.data", MAXLENGTH 100)
+	-> Discard;
+
+portSwitch[9]
+	-> GPS_TEST_PrintPacket(LABEL "[9]portSwitch.data")
+	-> GPS_TEST_PrintAnno("[9]portSwitch.anno")
+	-> GPS_EtherEncap(MY_ETHER $ether)
+	-> Print(LABEL "[9]EtherEncap.data", MAXLENGTH 100)
+	-> Discard;
+
 
 subTable[1]
 	-> GPS_TEST_PrintPacket(LABEL "SubTable[1].data")
@@ -63,4 +127,4 @@ TimedSource(5, "rrrrr", LIMIT 1, HEADROOM 96)
 	-> subQueue;
 
 
-StaticThreadSched(subUnqueue 1, arpUnqueue 2, outUnqueue 3);
+StaticThreadSched(subUnqueue 1, arpUnqueue 2);
