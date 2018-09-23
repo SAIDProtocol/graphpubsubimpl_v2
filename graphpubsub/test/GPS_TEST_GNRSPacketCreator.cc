@@ -88,7 +88,7 @@ int GPS_TEST_GNRSPacketCreator::configure(Vector<String> &conf, ErrorHandler *er
                 .read_p("SRC_NA", numSrcNa)
                 .read_p("DST_NA", numDstNa)
                 .read_p("REQUESTED_GUID_NA", numRequestedGuidNa)
-                .read_p("VERISON", version)
+                .read_p("VERSION", version)
                 .read_p("NONCE", nonce)
                 .complete() < 0) {
         return -1;
