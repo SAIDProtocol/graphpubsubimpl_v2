@@ -24,8 +24,11 @@ public:
 
     const char *processing() const override { return AGNOSTIC; };
 
-    Packet *simple_action(Packet *p) override;
+    int configure(Vector<String> &conf, ErrorHandler *errh) override CLICK_COLD;
 
+    Packet *simple_action(Packet *p) override;
+private:
+    uint8_t _myPort;
 };
 
 CLICK_ENDDECLS
