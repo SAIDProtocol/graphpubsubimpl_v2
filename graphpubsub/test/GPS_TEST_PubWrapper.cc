@@ -151,7 +151,7 @@ int GPS_TEST_PubWrapper::configure(Vector<String> &conf, ErrorHandler *errh) {
     gps_na_t srcNa, dstNa;
     if (Args(conf, this, errh)
                 .read_p("SRC_GUID", numSrcGuid)
-                .read_mp("DST_GUID", numDstGuid)
+                .read_p("DST_GUID", numDstGuid)
                 .read_p("SRC_NA", numSrcNa)
                 .read_p("DST_NA", numDstNa)
                 .read_p("DST_NA_FILE", dstNaFile)
