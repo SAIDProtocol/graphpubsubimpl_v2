@@ -24,6 +24,10 @@ public:
     static const int OUT_PORT_SUBSCRIPTION = 1;
     static const int OUT_PORT_PUBLICATION_DISCARD = 2;
 
+    static int parseArgFile(const String &fileName, ErrorHandler *errh,
+                            std::unordered_map<gps_guid_t, std::unordered_set<gps_na_t>> &subscriptions);
+
+
     GPS_SubscriptionTable() CLICK_COLD;
 
     ~GPS_SubscriptionTable() override CLICK_COLD;
@@ -44,7 +48,6 @@ private:
 
     GPS_ReadWriteLock _lock;
 
-    int parseArgFile(const String &fileName, ErrorHandler *errh);
 
     void handlePublication(Packet *packet);
 

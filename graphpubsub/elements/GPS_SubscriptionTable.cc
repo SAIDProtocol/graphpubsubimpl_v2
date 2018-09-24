@@ -18,7 +18,8 @@ GPS_SubscriptionTable::GPS_SubscriptionTable() = default;
 
 GPS_SubscriptionTable::~GPS_SubscriptionTable() = default;
 
-int GPS_SubscriptionTable::parseArgFile(const String &fileName, ErrorHandler *errh) {
+int GPS_SubscriptionTable::parseArgFile(const String &fileName, ErrorHandler *errh,
+                                        std::unordered_map<gps_guid_t, std::unordered_set<gps_na_t>> &subscriptions) {
     auto fp = fopen(fileName.c_str(), "r");
     if (fp == nullptr) {
         errh->error("Cannot read file %s", fileName.c_str());
@@ -94,7 +95,7 @@ int GPS_SubscriptionTable::parseArgFile(const String &fileName, ErrorHandler *er
         tmp += pos;
         (void) tmp;
 
-        _subscriptions[guid].insert(na);
+        subscriptions[guid].insert(na);
     }
     return 0;
 }
@@ -107,7 +108,7 @@ int GPS_SubscriptionTable::configure(Vector<String> &conf, ErrorHandler *errh) {
                 .complete() < 0) {
         return -1;
     }
-    if (parseArgFile(fileName, errh) < 0) return -1;
+    if (parseArgFile(fileName, errh, _subscriptions) < 0) return -1;
 
     {
         for (auto &it1 : _subscriptions) {
@@ -146,7 +147,8 @@ void GPS_SubscriptionTable::handlePublication(Packet *packet) {
     //check type
     if (unlikely(type != GPS_PACKET_TYPE_PUBLICATION)) {
         // Error! got a packet that is not publication!
-        click_chatter("[GPS_SubscriptionTable::handlePublication] Error packet type: 0x%x, should be publication: 0x%x", type, GPS_PACKET_TYPE_PUBLICATION);
+        click_chatter("[GPS_SubscriptionTable::handlePublication] Error packet type: 0x%x, should be publication: 0x%x",
+                      type, GPS_PACKET_TYPE_PUBLICATION);
         packet->kill();
         return;
     }
@@ -181,7 +183,9 @@ void GPS_SubscriptionTable::handleSubscription(Packet *packet) {
     auto type = gps_packet_get_type(header);
     if (unlikely(type != GPS_PACKET_TYPE_SUBSCRIPTION)) {
         // Error! got a packet that is not publication!
-        click_chatter("[GPS_SubscriptionTable::handleSubscription] Error packet type: 0x%x, should be subscription: 0x%x", type, GPS_PACKET_TYPE_SUBSCRIPTION);
+        click_chatter(
+                "[GPS_SubscriptionTable::handleSubscription] Error packet type: 0x%x, should be subscription: 0x%x",
+                type, GPS_PACKET_TYPE_SUBSCRIPTION);
         packet->kill();
         return;
     }
