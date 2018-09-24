@@ -27,7 +27,7 @@ int GPS_RoutingTable::configure(Vector<String> &conf, ErrorHandler *errh) {
         return -1;
     }
 
-    if (parseArgFile(fileName, errh) < 0) return -1;
+    if (parseArgFile(fileName, errh, _naNextHops) < 0) return -1;
 
     {
         for (auto &it1 : _naNextHops) {
@@ -65,7 +65,8 @@ void GPS_RoutingTable::push(int port, Packet *p) {
     }
 }
 
-int GPS_RoutingTable::parseArgFile(const String &fileName, ErrorHandler *errh) {
+int GPS_RoutingTable::parseArgFile(const String &fileName, ErrorHandler *errh,
+                                   std::unordered_map<gps_na_t, GPS_RoutingTableEntry> &naNextHops) {
     auto fp = fopen(fileName.c_str(), "r");
     if (fp == nullptr) {
         errh->error("Cannot read file %s", fileName.c_str());
@@ -163,9 +164,9 @@ int GPS_RoutingTable::parseArgFile(const String &fileName, ErrorHandler *errh) {
         tmp += pos;
         (void) tmp;
 
-        _naNextHops[dstNa].insertValue(&nextHopNa, distance);
+        naNextHops[dstNa].insertValue(&nextHopNa, distance);
     }
-    for (auto &it : _naNextHops) {
+    for (auto &it : naNextHops) {
         it.second.updateMinimal();
     }
 

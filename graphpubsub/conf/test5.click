@@ -15,10 +15,10 @@ next::Null
 	-> GPS_TEST_PrintAnno("arpTable[0].anno")
 	-> Discard;
 
-TimedSource(1, "bbbbb", LIMIT 1, HEADROOM 96)
-	-> GPS_TEST_PubWrapper(DST_GUID 0x223)
+TimedSource(1, "bbbbb", LIMIT 10, HEADROOM 96)
+	-> GPS_TEST_PubWrapper(DST_GUID 0x223, DST_NA_FILE $rtgFile)
 	-> EtherEncap(0x0800, 70:8b:cd:bc:84:47, 70:8b:cd:bc:84:46)
-	-> GPS_EtherAnnotator
+	-> GPS_EtherAnnotator(PORT 1)
 	-> Strip(14)
 	-> next;
 
@@ -30,7 +30,7 @@ TimedSource(2, "bbbbb", LIMIT 1, HEADROOM 96)
 	-> IPPrint("After IP")
 	-> EtherEncap(0x0800, 70:8b:cd:bc:84:46, 70:8b:cd:bc:84:47)
 	-> Print("Before Ether")
-	-> GPS_EtherAnnotator
+	-> GPS_EtherAnnotator(PORT 2)
 	-> Print
 	-> StripIPHeader
 	-> next;

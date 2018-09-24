@@ -14,6 +14,14 @@
 
 CLICK_DECLS
 
+class GPS_TEST_AbstractPubWrapper {
+public:
+    virtual ~GPS_TEST_AbstractPubWrapper() = default;
+
+    virtual Packet *wrapPacket(Packet *p) = 0;
+};
+
+
 class GPS_TEST_PubWrapper : public Element {
 public:
     GPS_TEST_PubWrapper() CLICK_COLD;
@@ -31,8 +39,8 @@ public:
     Packet *simple_action(Packet *p) override ;
 
 private:
-    gps_guid_t _srcGuid, _dstGuid;
-    gps_na_t _srcNa, _dstNa;
+    GPS_TEST_AbstractPubWrapper *_wrapper;
+
 };
 
 CLICK_ENDDECLS

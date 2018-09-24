@@ -60,9 +60,13 @@ public:
     static const int OUT_PORT_DATA = 0;
     static const int OUT_PORT_DISCARD = 1;
 
+    static int parseArgFile(const String &fileName, ErrorHandler *errh, std::unordered_map<gps_na_t, GPS_RoutingTableEntry>& naNextHops);
+
     GPS_RoutingTable() CLICK_COLD;
 
-    ~GPS_RoutingTable() override CLICK_COLD;
+    ~GPS_RoutingTable() override
+
+    CLICK_COLD;
 
     const char *class_name() const override { return "GPS_RoutingTable"; }
 
@@ -70,14 +74,15 @@ public:
 
     const char *processing() const override { return PUSH; };
 
-    int configure(Vector<String> &conf, ErrorHandler *errh) override CLICK_COLD;
+    int configure(Vector<String> &conf, ErrorHandler *errh) override
+
+    CLICK_COLD;
 
     void push(int port, Packet *p) override;
 
 private:
     std::unordered_map<gps_na_t, GPS_RoutingTableEntry> _naNextHops;
 
-    int parseArgFile(const String &fileName, ErrorHandler *errh);
 
     void handleData(Packet *p);
 

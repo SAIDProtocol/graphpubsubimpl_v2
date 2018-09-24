@@ -128,17 +128,17 @@ portSwitch[3] -> outQueue3;
 outQueue1
 	-> outEncap1
 //	-> Print("outEncap1", 100)
-	-> ToDevice($dev1)
+	-> toDev1::ToDevice($dev1)
 
 outQueue2
 	-> outEncap2
 //	-> Print("outEncap2", 100)
-	-> ToDevice($dev2)
+	-> toDev2::ToDevice($dev2)
 
 outQueue3
 	-> outEncap3
 //	-> Print("outEncap3", 100)
-	-> ToDevice($dev3)
+	-> toDev3::ToDevice($dev3)
 
 
 classifier1[1]		// Cannot understand ether type from dev 1
@@ -177,3 +177,4 @@ gnrsCache[1]		// to local, discard
 	-> Print("gnrsCache[1]", 100)
 	-> Discard;
 
+//StaticThreadSched(inUnquque 1, gnrsUnqueue 2, arpUnqueue 3, subUnqueue 4, toDev1 5, toDev2 6, toDev3 7);
