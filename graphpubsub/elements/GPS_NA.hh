@@ -41,7 +41,7 @@ static inline bool gps_na_is_empty(const gps_na_t *na) {
 }
 
 static inline String gps_na_unparse(const gps_na_t *na) {
-    auto str = String::make_uninitialized(2 * sizeof(uint32_t));
+    auto str = String::make_uninitialized(2 * sizeof(gps_na_t::value));
     if (auto x = str.mutable_c_str())
         snprintf(x, 9, "%08x", ntohl(na->value));
     return str;

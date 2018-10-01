@@ -26,7 +26,7 @@ public:
 
     Packet *getPacket() override {
         auto pkt = Packet::make(GPS_DEFAULT_HEAD_ROOM, nullptr, sizeof(gps_packet_gnrsRequest_t), 0);
-        *PRIO_ANNO(pkt) = GPS_PACKET_PRIO_GNRS_REQ;
+        *GPS_ANNO_PRIO(pkt) = GPS_PACKET_PRIO_GNRS_REQ;
         gps_packet_gnrsRequest_init(pkt->data(), &_dstGuid, &_srcNa, &_dstNa);
         return pkt;
     }
@@ -59,7 +59,7 @@ public:
 
     Packet *getPacket() override {
         auto pkt = Packet::make(GPS_DEFAULT_HEAD_ROOM, nullptr, sizeof(gps_packet_gnrsResponse_t), 0);
-        *PRIO_ANNO(pkt) = GPS_PACKET_PRIO_GNRS_RESP;
+        *GPS_ANNO_PRIO(pkt) = GPS_PACKET_PRIO_GNRS_RESP;
         gps_packet_gnrsResponse_init(pkt->data(), &_srcGuid, &_srcNa, &_dstNa, &_requestedGuidNa, _version, _nonce);
         return pkt;
     }

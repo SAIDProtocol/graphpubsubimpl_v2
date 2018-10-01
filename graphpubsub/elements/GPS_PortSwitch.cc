@@ -14,7 +14,7 @@ GPS_PortSwitch::~GPS_PortSwitch() = default;
 
 void GPS_PortSwitch::push(int port, Packet *p) {
     (void)port;
-    uint8_t *nextHopPort = NEXT_HOP_PORT_ANNO(p);
+    uint8_t *nextHopPort = GPS_ANNO_NEXT_HOP_PORT(p);
     checked_output_push(*nextHopPort, p);
 }
 

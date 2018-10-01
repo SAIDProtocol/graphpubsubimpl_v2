@@ -166,8 +166,8 @@ void GPS_SubscriptionTable::handlePublication(Packet *packet) {
             hasSub = true;
             auto toForward = packet->clone();
             //            click_chatter("p_in: %p, p_in.data: %p, packet: %p, anno: %p, data: %p",
-            //                    packet, packet->data(), toForward, NEXT_HOP_NA_ANNO(toForward), toForward->data());
-            gps_na_set_val(NEXT_HOP_NA_ANNO(toForward), &it2);
+            //                    packet, packet->data(), toForward, GPS_ANNO_NEXT_HOP_NA(toForward), toForward->data());
+            gps_na_set_val(GPS_ANNO_NEXT_HOP_NA(toForward), &it2);
             checked_output_push(OUT_PORT_PUBLICATION, toForward);
         }
 

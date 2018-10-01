@@ -13,7 +13,7 @@ GPS_PrioAnnotator::GPS_PrioAnnotator() = default;
 GPS_PrioAnnotator::~GPS_PrioAnnotator() = default;
 
 Packet *GPS_PrioAnnotator::simple_action(Packet *p) {
-    uint8_t *prio = PRIO_ANNO(p);
+    uint8_t *prio = GPS_ANNO_PRIO(p);
     auto type = gps_packet_get_type(p->data());
 
     switch (type) {

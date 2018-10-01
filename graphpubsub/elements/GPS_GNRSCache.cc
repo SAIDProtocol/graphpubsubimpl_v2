@@ -77,7 +77,7 @@ void GPS_GNRSCache::handleData(Packet *packet) {
                 auto &pendingPackets = _pendingPackets[*dstGuid];
                 if (pendingPackets.empty()) {
                     auto request = Packet::make(GPS_DEFAULT_HEAD_ROOM, nullptr, sizeof(gps_packet_gnrsRequest_t), 0);
-                    *PRIO_ANNO(request) = GPS_PACKET_PRIO_GNRS_REQ;
+                    *GPS_ANNO_PRIO(request) = GPS_PACKET_PRIO_GNRS_REQ;
                     auto requestHeader = request->data();
                     // fill req
                     gps_packet_gnrsRequest_init(requestHeader, dstGuid, &_myNa, &_gnrsNa);
@@ -122,7 +122,7 @@ void GPS_GNRSCache::handleGNRSRequest(Packet *packet) {
             }
         } else {
             auto response = Packet::make(GPS_DEFAULT_HEAD_ROOM, nullptr, sizeof(gps_packet_gnrsResponse_t), 0);
-            *PRIO_ANNO(response) = GPS_PACKET_PRIO_GNRS_RESP;
+            *GPS_ANNO_PRIO(response) = GPS_PACKET_PRIO_GNRS_RESP;
             auto responseHeader = response->data();
             auto nonce = click_random(0, UINT32_MAX);
             gps_packet_gnrsResponse_init(responseHeader, guid, &_myNa, gps_packet_gnrsRequest_get_srcNa(header),

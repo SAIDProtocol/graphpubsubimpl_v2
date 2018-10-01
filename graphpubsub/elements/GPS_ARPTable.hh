@@ -38,6 +38,9 @@ private:
 
 class GPS_ARPTable : public Element {
 public:
+    static int
+    parseArgFile(const String &fileName, ErrorHandler *errh, std::unordered_map<gps_na_t, GPS_NAAddress> &naAddresses);
+
     static const int IN_PORT_DATA = 0;
     static const int IN_PORT_LSA = 1;
     static const int OUT_PORT_DATA = 0;
@@ -45,7 +48,9 @@ public:
 
     GPS_ARPTable() CLICK_COLD;
 
-    ~GPS_ARPTable() override CLICK_COLD;
+    ~GPS_ARPTable() override
+
+    CLICK_COLD;
 
     const char *class_name() const override { return "GPS_ARPTable"; };
 
@@ -53,7 +58,9 @@ public:
 
     const char *processing() const override { return PUSH; };
 
-    int configure(Vector<String> &conf, ErrorHandler *errh) override CLICK_COLD;
+    int configure(Vector<String> &conf, ErrorHandler *errh) override
+
+    CLICK_COLD;
 
     void push(int port, Packet *p) override;
 
@@ -61,8 +68,6 @@ public:
 private:
     std::unordered_map<gps_na_t, GPS_NAAddress> _naAddresses;
     GPS_ReadWriteLock _lock;
-
-    int parseArgFile(const String &fileName, ErrorHandler *errh);
 
     void handleData(Packet *p);
 

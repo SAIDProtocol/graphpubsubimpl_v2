@@ -39,7 +39,7 @@ public:
         auto newPkt = p->push(sizeof(gps_packet_publication_t));
 
         gps_packet_publication_init(newPkt->data(), &_srcGuid, &_dstGuid, &_srcNa, &_dstNa, payloadSize);
-        *PRIO_ANNO(p) = GPS_PACKET_PRIO_PUBLICATION;
+        *GPS_ANNO_PRIO(p) = GPS_PACKET_PRIO_PUBLICATION;
 
         return newPkt;
     }
@@ -81,7 +81,7 @@ public:
 
         gps_na_t *dstNa = &_dstNas[_rand() % _dstNas.size()];
         gps_packet_publication_init(newPkt->data(), &_srcGuid, &_dstGuid, &_srcNa, dstNa, payloadSize);
-        *PRIO_ANNO(p) = GPS_PACKET_PRIO_PUBLICATION;
+        *GPS_ANNO_PRIO(p) = GPS_PACKET_PRIO_PUBLICATION;
 
         return newPkt;
     }
@@ -125,7 +125,7 @@ public:
 
         gps_guid_t *dstGuid = &_dstGuids[_rand() % _dstGuids.size()];
         gps_packet_publication_init(newPkt->data(), &_srcGuid, dstGuid, &_na, &_na, payloadSize);
-        *PRIO_ANNO(p) = GPS_PACKET_PRIO_PUBLICATION;
+        *GPS_ANNO_PRIO(p) = GPS_PACKET_PRIO_PUBLICATION;
         return newPkt;
     }
 

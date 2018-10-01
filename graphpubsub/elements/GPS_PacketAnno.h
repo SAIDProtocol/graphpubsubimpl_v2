@@ -10,37 +10,37 @@
 
 CLICK_CXX_PROTECT
 
-#define SRC_IP_ANNO_OFFSET  (16)
-#define SRC_IP_ANNO_SIZE  4
-#define SRC_IP_ANNO(p)  ((unsigned char *)((p)->anno_u8() + SRC_IP_ANNO_OFFSET))
+#define GPS_ANNO_OFFSET_SRC_IP  (16)
+#define GPS_ANNO_SIZE_SRC_IP  4
+#define GPS_ANNO_SRC_IP(p)  ((unsigned char *)((p)->anno_u8() + GPS_ANNO_OFFSET_SRC_IP))
 
-#define SRC_ETHER_ANNO_OFFSET  (20)
-#define SRC_ETHER_ANNO_SIZE  (6)
-#define SRC_ETHER_ANNO(p)  ((unsigned char *)((p)->anno_u8() + SRC_ETHER_ANNO_OFFSET))
+#define GPS_ANNO_OFFSET_SRC_ETHER  (20)
+#define GPS_ANNO_SIZE_SRC_ETHER  (6)
+#define GPS_ANNO_SRC_ETHER(p)  ((unsigned char *)((p)->anno_u8() + GPS_ANNO_OFFSET_SRC_ETHER))
 
-#define NEXT_HOP_ETHER_ANNO_OFFSET  (26)
-#define NEXT_HOP_ETHER_ANNO_SIZE  (6)
-#define NEXT_HOP_ETHER_ANNO(p)  ((unsigned char *)((p)->anno_u8() + NEXT_HOP_ETHER_ANNO_OFFSET))
+#define GPS_ANNO_OFFSET_NEXT_HOP_ETHER  (26)
+#define GPS_ANNO_SIZE_NEXT_HOP_ETHER  (6)
+#define GPS_ANNO_NEXT_HOP_ETHER(p)  ((unsigned char *)((p)->anno_u8() + GPS_ANNO_OFFSET_NEXT_HOP_ETHER))
 
-#define NEXT_HOP_IP_ANNO_OFFSET  (32)
-#define NEXT_HOP_IP_ANNO_SIZE  (4)
-#define NEXT_HOP_IP_ANNO(p)  ((unsigned char *)((p)->anno_u8() + NEXT_HOP_IP_ANNO_OFFSET))
+#define GPS_ANNO_OFFSET_NEXT_HOP_IP  (32)
+#define GPS_ANNO_SIZE_NEXT_HOP_IP  (4)
+#define GPS_ANNO_NEXT_HOP_IP(p)  ((unsigned char *)((p)->anno_u8() + GPS_ANNO_OFFSET_NEXT_HOP_IP))
 
-#define NEXT_HOP_NA_ANNO_OFFSET  (36)
-#define NEXT_HOP_NA_ANNO_SIZE  (4)
-#define NEXT_HOP_NA_ANNO(p)  ((gps_na_t *)((p)->anno_u8() + NEXT_HOP_NA_ANNO_OFFSET))
+#define GPS_ANNO_OFFSET_NEXT_HOP_NA  (36)
+#define GPS_ANNO_SIZE_NEXT_HOP_NA  (4)
+#define GPS_ANNO_NEXT_HOP_NA(p)  ((gps_na_t *)((p)->anno_u8() + GPS_ANNO_OFFSET_NEXT_HOP_NA))
 
-#define SRC_PORT_ANNO_OFFSET  (40)
-#define SRC_PORT_ANNO_SIZE  1
-#define SRC_PORT_ANNO(p)  ((p)->anno_u8() + SRC_PORT_ANNO_OFFSET)
+#define GPS_ANNO_OFFSET_SRC_PORT  (40)
+#define GPS_ANNO_SIZE_SRC_PORT  1
+#define GPS_ANNO_SRC_PORT(p)  ((p)->anno_u8() + GPS_ANNO_OFFSET_SRC_PORT)
 
-#define NEXT_HOP_PORT_ANNO_OFFSET (41)
-#define NEXT_HOP_PORT_ANNO_SIZE  (1)
-#define NEXT_HOP_PORT_ANNO(p)  ((p)->anno_u8() + NEXT_HOP_PORT_ANNO_OFFSET)
+#define GPS_ANNO_OFFSET_NEXT_HOP_PORT (41)
+#define GPS_ANNO_SIZE_NEXT_HOP_PORT  (1)
+#define GPS_ANNO_NEXT_HOP_PORT(p)  ((p)->anno_u8() + GPS_ANNO_OFFSET_NEXT_HOP_PORT)
 
-#define PRIO_ANNO_OFFSET  (42)
-#define PRIO_ANNO_SIZE  1
-#define PRIO_ANNO(p)  ((p)->anno_u8() + PRIO_ANNO_OFFSET)
+#define GPS_ANNO_OFFSET_PRIO  (42)
+#define GPS_ANNO_SIZE_PRIO  1
+#define GPS_ANNO_PRIO(p)  ((p)->anno_u8() + GPS_ANNO_OFFSET_PRIO)
 
 
 CLICK_CXX_UNPROTECT

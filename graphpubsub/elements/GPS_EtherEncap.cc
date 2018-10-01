@@ -18,7 +18,7 @@ GPS_EtherEncap::~GPS_EtherEncap() = default;
 Packet *GPS_EtherEncap::simple_action(Packet *p) {
     auto writablePacket = p->push_mac_header(sizeof(click_ether));
     auto macHeader = reinterpret_cast<click_ether *>(writablePacket->mac_header());
-    copyEther(macHeader->ether_dhost, NEXT_HOP_ETHER_ANNO(p));
+    copyEther(macHeader->ether_dhost, GPS_ANNO_NEXT_HOP_ETHER(p));
     copyEther(macHeader->ether_shost, _myEther.data());
     macHeader->ether_type = GPS_EtherEncap::GPS_DEFAULT_ETHER_TYPE();
     return writablePacket;

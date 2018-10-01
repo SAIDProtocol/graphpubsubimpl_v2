@@ -191,7 +191,7 @@ void GPS_RoutingTable::handleData(Packet *p) {
 
 
     if (unlikely(gps_na_is_broadcast(dstNa))) {
-        gps_na_set_broadcast(NEXT_HOP_NA_ANNO(p));
+        gps_na_set_broadcast(GPS_ANNO_NEXT_HOP_NA(p));
         checked_output_push(OUT_PORT_DATA, p);
     } else {
         auto it = _naNextHops.find(*dstNa);
@@ -199,7 +199,7 @@ void GPS_RoutingTable::handleData(Packet *p) {
             // cannot find routing, discard
             checked_output_push(OUT_PORT_DISCARD, p);
         } else {
-            gps_na_set_val(NEXT_HOP_NA_ANNO(p), it->second.getMinNextHop());
+            gps_na_set_val(GPS_ANNO_NEXT_HOP_NA(p), it->second.getMinNextHop());
             checked_output_push(OUT_PORT_DATA, p);
         }
     }

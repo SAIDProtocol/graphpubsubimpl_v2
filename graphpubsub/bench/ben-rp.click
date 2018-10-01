@@ -65,8 +65,8 @@ inClassifier[0]	// lsa
 	-> [1]arpTable;
 
 inClassifier[1] // publication
-//	-> GPS_TEST_PrintPacket(LABEL "PUBLICATION")
-//	-> GPS_TEST_PrintAnno(LABEL "PUBLICATION")
+	-> GPS_TEST_PrintPacket(LABEL "PUBLICATION")
+	-> GPS_TEST_PrintAnno(LABEL "PUBLICATION")
 	-> pubClassifier::Classifier(44/00000000, -);
 
 inClassifier[2]
@@ -99,14 +99,16 @@ pubClassifier[1] // publication to subs
 gnrsDataQueue
 	-> gnrsUnqueue::Unqueue
 	-> [0]gnrsCache
-//	-> GPS_TEST_PrintPacket(LABEL "gnrsCache[0]")
-//	-> GPS_TEST_PrintAnno(LABEL "gnrsCache[0]")
+	-> GPS_TEST_PrintPacket(LABEL "gnrsCache[0]")
+	-> GPS_TEST_PrintAnno(LABEL "gnrsCache[0]")
 	-> [0]rtgTable
 //	-> GPS_TEST_PrintPacket(LABEL "rtgTable[0]")
 //	-> GPS_TEST_PrintAnno(LABEL "rtgTable[0]")
 	-> arpQueue;
 
 gnrsCache[1]	// to local, do RP expansion
+	-> GPS_TEST_PrintPacket(LABEL "gnrsCache[1]")
+	-> GPS_TEST_PrintAnno(LABEL "gnrsCache[1]")
 	-> rp
 	-> GPS_TEST_PrintPacket(LABEL "rp[0]")
 	-> GPS_TEST_PrintAnno(LABEL "rp[0]")
@@ -120,7 +122,11 @@ rp[1]
 
 subQueue
 	-> subUnqueue::Unqueue
+	-> GPS_TEST_PrintPacket(LABEL "[0]subTable")
+	-> GPS_TEST_PrintAnno(LABEL "[0]subTable")
 	-> subTable
+	-> GPS_TEST_PrintPacket(LABEL "subTable[0]")
+	-> GPS_TEST_PrintAnno(LABEL "subTable[0]")
 	-> arpQueue;
 
 subTable[1] // subscription
@@ -130,9 +136,11 @@ subTable[1] // subscription
 
 arpQueue
 	-> arpUnqueue::Unqueue
+	-> GPS_TEST_PrintPacket(LABEL "[0]arpTable")
+	-> GPS_TEST_PrintAnno(LABEL "[0]arpTable")
 	-> arpTable
-//	-> GPS_TEST_PrintPacket(LABEL "arpTable[0]")
-//	-> GPS_TEST_PrintAnno(LABEL "arpTable[0]")
+	-> GPS_TEST_PrintPacket(LABEL "arpTable[0]")
+	-> GPS_TEST_PrintAnno(LABEL "arpTable[0]")
 	-> portSwitch;
 
 portSwitch[1] -> outQueue1;
@@ -141,17 +149,17 @@ portSwitch[3] -> outQueue3;
 
 outQueue1
 	-> outEncap1
-//	-> Print("outEncap1", 100)
+	-> Print("outEncap1", 100)
 	-> ToDevice($dev1)
 
 outQueue2
 	-> outEncap2
-//	-> Print("outEncap2", 100)
+	-> Print("outEncap2", 100)
 	-> ToDevice($dev2)
 
 outQueue3
 	-> outEncap3
-//	-> Print("outEncap3", 100)
+	-> Print("outEncap3", 100)
 	-> ToDevice($dev3)
 
 

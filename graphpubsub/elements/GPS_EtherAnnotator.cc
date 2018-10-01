@@ -18,8 +18,8 @@ GPS_EtherAnnotator::~GPS_EtherAnnotator() = default;
 
 Packet *GPS_EtherAnnotator::simple_action(Packet *p) {
     auto etherHeader = p->ether_header();
-    copyEther(SRC_ETHER_ANNO(p), etherHeader->ether_shost);
-    *SRC_PORT_ANNO(p) = _myPort;
+    copyEther(GPS_ANNO_SRC_ETHER(p), etherHeader->ether_shost);
+    *GPS_ANNO_SRC_PORT(p) = _myPort;
     return p;
 }
 

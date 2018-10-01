@@ -28,14 +28,14 @@ Packet *GPS_TEST_PrintAnno::simple_action(Packet *p_in) {
     click_chatter(
             "%s: srcIp=%s | srcEther=%s | srcPort=%d |  nextHopNa=%s | nextHopIp=%s | nextHopEther=%s | nextHopPort=%d | prio=%d",
             _label.c_str(),
-            IPAddress(SRC_IP_ANNO(p_in)).unparse().c_str(),
-            EtherAddress(SRC_ETHER_ANNO(p_in)).unparse_colon().c_str(),
-            *SRC_PORT_ANNO(p_in),
-            gps_na_unparse(NEXT_HOP_NA_ANNO(p_in)).c_str(),
-            IPAddress(NEXT_HOP_IP_ANNO(p_in)).unparse().c_str(),
-            EtherAddress(NEXT_HOP_ETHER_ANNO(p_in)).unparse_colon().c_str(),
-            *NEXT_HOP_PORT_ANNO(p_in),
-            *PRIO_ANNO(p_in));
+            IPAddress(GPS_ANNO_SRC_IP(p_in)).unparse().c_str(),
+            EtherAddress(GPS_ANNO_SRC_ETHER(p_in)).unparse_colon().c_str(),
+            *GPS_ANNO_SRC_PORT(p_in),
+            gps_na_unparse(GPS_ANNO_NEXT_HOP_NA(p_in)).c_str(),
+            IPAddress(GPS_ANNO_NEXT_HOP_IP(p_in)).unparse().c_str(),
+            EtherAddress(GPS_ANNO_NEXT_HOP_ETHER(p_in)).unparse_colon().c_str(),
+            *GPS_ANNO_NEXT_HOP_PORT(p_in),
+            *GPS_ANNO_PRIO(p_in));
     return p_in;
 }
 

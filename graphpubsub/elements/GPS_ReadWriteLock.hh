@@ -12,7 +12,7 @@
 
 CLICK_DECLS
 
-/** @Class GPS_RedWriteLock
+/** @Class GPS_ReadWriteLock
  *
  * same function and interface as click ReadWriteLock (but ReadWriteLock only works in LINUX_MODULE and CLICK_SMP
  * implemented using pthread library
