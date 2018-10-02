@@ -11,8 +11,8 @@
 #include <click/etheraddress.hh>
 #include <click/ipaddress.hh>
 #include <unordered_map>
-//#include "HRC_NA.hh"
-//#include "HRC_ReadWriteLock.hh"
+#include "HRC_NA.hh"
+#include "HRC_ReadWriteLock.hh"
 
 CLICK_DECLS
 
@@ -43,9 +43,14 @@ public:
     static const int OUT_PORT_DATA = 0;
     static const int OUT_PORT_DISCARD = 1;
 
+    static int
+    parseArgFile(const String &fileName, ErrorHandler *errh, std::unordered_map<hrc_na_t, HRC_NAAddress> &naAddresses);
+
     HRC_ARPTable() CLICK_COLD;
 
-    ~HRC_ARPTable() override CLICK_COLD;
+    ~HRC_ARPTable() override
+
+    CLICK_COLD;
 
     const char *class_name() const override { return "HRC_ARPTable"; };
 
@@ -53,16 +58,16 @@ public:
 
     const char *processing() const override { return PUSH; };
 
-    int configure(Vector<String> &conf, ErrorHandler *errh) override CLICK_COLD;
+    int configure(Vector<String> &conf, ErrorHandler *errh) override
+
+    CLICK_COLD;
 
     void push(int port, Packet *p) override;
 
 
 private:
-//    std::unordered_map<gps_na_t, GPS_NAAddress> _naAddresses;
-//    GPS_ReadWriteLock _lock;
-
-    int parseArgFile(const String &fileName, ErrorHandler *errh);
+    std::unordered_map<hrc_na_t, HRC_NAAddress> _naAddresses;
+    HRC_ReadWriteLock _lock;
 
     void handleData(Packet *p);
 
