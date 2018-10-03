@@ -4,8 +4,11 @@
 
 #include "HRC_TEST_InterestTable.hh"
 #include <click/args.hh>
+#include <sstream>
 
 CLICK_DECLS
+
+//#define HRC_TEST_INTERESTTABLE_DEBUG
 
 HRC_TEST_InterestTable::HRC_TEST_InterestTable() = default;
 
@@ -31,25 +34,62 @@ void HRC_TEST_InterestTable::exactMatch(const String &param) {
 }
 
 void HRC_TEST_InterestTable::set(const String &param) {
+#ifdef HRC_TEST_INTERESTTABLE_DEBUG
     click_chatter("Set: %s", _set.c_str());
+#endif
     _set = param;
-    auto conf = cp_uncomment(param);
-    auto s = conf.begin(), end = conf.end();
 
-    while (s < end) {
-        auto nl = find(s, end, '\n');
-        uint32_t val;
-        auto line = conf.substring(s, nl);
-        auto first_word = cp_shift_spacevec(line);
-
-        if (cp_integer(line, &val)) {
-            click_chatter(R"(Parse line "%s" "%s")", first_word.c_str(), line.c_str());
-            click_chatter(R"(  set: "%s" -> %d)", first_word.c_str(), val);
-            _table.set(first_word.c_str(), val);
-        } else {
-            click_chatter(R"(Cannot parse line "%s" "%s")", first_word.c_str(), line.c_str());
+    std::istringstream stream(param.c_str());
+    std::string line, strVal;
+    IntArg intArg;
+    uint32_t val;
+    int lineNum = 0;
+    while (std::getline(stream, line)) {
+        ++lineNum;
+#ifdef HRC_TEST_INTERESTTABLE_DEBUG
+        click_chatter(R"(line %d: "%s")", lineNum, line.c_str());
+#endif
+        std::string name, strNum;
+        auto skip = line.find_first_not_of(" \t\r\n");
+        if (skip == std::string::npos) {
+#ifdef HRC_TEST_INTERESTTABLE_DEBUG
+            click_chatter("Empty line");
+#endif
+            continue;
         }
-        s = nl + 1;
+        // comment
+        if (line[skip] == '#') {
+#ifdef HRC_TEST_INTERESTTABLE_DEBUG
+            click_chatter("Comment line");
+#endif
+            continue;
+        }
+        line = line.substr(skip);
+
+        auto size = line.find_first_of(" \t\r\n");
+        skip = line.find_first_not_of(" \t\r\n", size);
+        if (size == std::string::npos || skip == std::string::npos) {
+            click_chatter("Skipping line %d with only 1 part.", lineNum);
+            continue;
+        } else {
+            name = line.substr(0, size);
+            line = line.substr(skip);
+#ifdef HRC_TEST_INTERESTTABLE_DEBUG
+            click_chatter(R"(Name: "%s", line: "%s")", name.c_str(), line.c_str());
+#endif
+        }
+
+        size = line.find_first_of(" \t\r\n");
+        strVal = size == std::string::npos ? line.substr() : line.substr(0, size);
+#ifdef HRC_TEST_INTERESTTABLE_DEBUG
+        click_chatter(R"(NA: "%s")", strVal.c_str());
+#endif
+        if (!intArg.parse(strVal.c_str(), val)) {
+            click_chatter("Skipping line %d, cannot parse val.", lineNum);
+            continue;
+        }
+        click_chatter("Entry: %s -> %d", name.c_str(), val);
+        _table.set(name.c_str(), val);
     }
     print();
 }
@@ -62,9 +102,9 @@ void HRC_TEST_InterestTable::remove(const String &param) {
 }
 
 void HRC_TEST_InterestTable::print() {
-    click_chatter(">>>>Printing table...");
+    click_chatter(">>>> Printing table... >>>>");
     _table.forEach(printInterestTable);
-    click_chatter(">>>>End Printing table...");
+    click_chatter("<<<< End Printing table... <<<<");
 }
 
 int HRC_TEST_InterestTable::change_param(const String &s, Element *e, void *vparam, ErrorHandler *errh) {

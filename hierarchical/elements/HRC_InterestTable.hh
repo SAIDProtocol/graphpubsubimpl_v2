@@ -161,8 +161,6 @@ public:
 
     inline bool remove(const char *name) { return _root.remove(name); }
 
-//    inline bool set(const char *name, T val) { return _root.set(name, val); }
-
     inline bool set(const char *name, const T &val) { return _root.set(name, val); }
 
     inline T *longestPrefixMatch(const char *name) const { return _root.longestPrefixMatch(name); }

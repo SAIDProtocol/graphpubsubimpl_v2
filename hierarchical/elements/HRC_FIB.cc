@@ -116,8 +116,8 @@ int HRC_FIB::parseArgFile(String &fileName, ErrorHandler *errh, HRC_InterestTabl
 static ErrorHandler *tmpErrh;
 
 static void printInterestTable(const std::string &prefix, hrc_na_t &v) {
-    if (tmpErrh)
-        tmpErrh->debug("%s (%p) -> %s (%p)", prefix.c_str(), &prefix, hrc_na_unparse(&v).c_str(), &v);
+    if (tmpErrh) tmpErrh->debug("%s (%p) -> %s (%p)", prefix.c_str(), &prefix, hrc_na_unparse(&v).c_str(), &v);
+    else click_chatter("%s (%p) -> %s (%p)", prefix.c_str(), &prefix, hrc_na_unparse(&v).c_str(), &v);
 }
 
 int HRC_FIB::configure(Vector<String> &conf, ErrorHandler *errh) {
@@ -133,7 +133,6 @@ int HRC_FIB::configure(Vector<String> &conf, ErrorHandler *errh) {
         tmpErrh = errh;
         _interestTable.forEach(printInterestTable);
         tmpErrh = nullptr;
-
     }
 
     return 0;

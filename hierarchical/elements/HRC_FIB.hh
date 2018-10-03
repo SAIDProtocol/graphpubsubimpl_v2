@@ -26,6 +26,7 @@ public:
     static const int OUT_PORT_DATA = 0;
     static const int OUT_PORT_SUBSCRIPTION = 1;
     static const int OUT_PORT_ANNOUNCEMENT = 2;
+    static const int OUT_PORT_DISCARD = 3;
     static int parseArgFile(String &fileName, ErrorHandler *errh, HRC_InterestTable<hrc_na_t> &interestTable);
 
     HRC_FIB() CLICK_COLD;
