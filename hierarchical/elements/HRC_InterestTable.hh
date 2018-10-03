@@ -68,7 +68,7 @@ public:
     }
 
     // return true if a new name is added
-    inline bool set(const char *name, T val) {
+    inline bool set(const char *name, const T &val) {
         if (*name == NAME_SEPARATOR) name++;
         if (*name == '\0') {
             return setVal(val);
@@ -125,7 +125,7 @@ public:
     }
 
 private:
-    inline bool setVal(T &t) {
+    inline bool setVal(const T &t) {
         if (_val) {
             *_val = t;
             return false;
@@ -161,7 +161,9 @@ public:
 
     inline bool remove(const char *name) { return _root.remove(name); }
 
-    inline bool set(const char *name, T val) { return _root.set(name, val); }
+//    inline bool set(const char *name, T val) { return _root.set(name, val); }
+
+    inline bool set(const char *name, const T &val) { return _root.set(name, val); }
 
     inline T *longestPrefixMatch(const char *name) const { return _root.longestPrefixMatch(name); }
 
