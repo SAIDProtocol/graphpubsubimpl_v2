@@ -1,8 +1,8 @@
-/a/bb	1
-/a/ccc	2
-/a/bb/dddd 3
-/a//eeeee		4
-/a/ccc   0x6f5
+/a/bb	0x241
+/a/ccc	0x242
+/a/bb/dddd 0x243
+/a//eeeee		0x244
+/a/ccc   0x2000
                 #aa
 
                 #

@@ -16,7 +16,8 @@ HRC_TEST_InterestWrapper::~HRC_TEST_InterestWrapper() = default;
 
 Packet *HRC_TEST_InterestWrapper::simple_action(Packet *p) {
     auto payloadSize = p->length();
-    auto wp = p->push(_headerSize);
+
+    auto wp = p->push(static_cast<uint32_t >(_headerSize));
     auto header = wp->data();
     hrc_packet_interest_init(header, _name.c_str(), payloadSize);
     return wp;

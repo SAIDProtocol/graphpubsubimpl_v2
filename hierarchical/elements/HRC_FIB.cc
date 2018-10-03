@@ -4,6 +4,8 @@
 
 #include "HRC_FIB.hh"
 #include "HRC_Helper.h"
+#include "HRC_PacketHeader.hh"
+#include "HRC_PacketAnno.hh"
 #include <click/args.hh>
 
 //#define HRC_FIB_DEBUG
@@ -17,7 +19,7 @@ HRC_FIB::~HRC_FIB() = default;
 void HRC_FIB::push(int port, Packet *p) {
     switch (port) {
         case IN_PORT_DATA:
-            handleData(p);
+            handleInterest(p);
             break;
         case IN_PORT_SUBSCRIPTION:
             handleSubscription(p);
@@ -134,17 +136,32 @@ int HRC_FIB::configure(Vector<String> &conf, ErrorHandler *errh) {
         _interestTable.forEach(printInterestTable);
         tmpErrh = nullptr;
     }
-
     return 0;
 }
 
 
-void HRC_FIB::handleData(Packet *packet) {
-    packet->kill();
+void HRC_FIB::handleInterest(Packet *packet) {
+    auto header = packet->data();
+    auto type = hrc_packet_get_type(header);
+    if (unlikely(type != HRC_PACKET_TYPE_INTEREST)) {
+        click_chatter("[HRC_FIB::handleInterest] Error packet type (%02x). Should be interest (%02x)", type,
+                      HRC_PACKET_TYPE_INTEREST);
+        packet->kill();
+    } else {
+        const char *name = hrc_packet_interest_get_name(header);
+        auto na = _interestTable.longestPrefixMatch(name);
+        if (na) {
+            hrc_na_set_val(HRC_ANNO_NEXT_HOP_NA(packet), na);
+            checked_output_push(OUT_PORT_DATA, packet);
+        } else {
+            checked_output_push(OUT_PORT_DISCARD, packet);
+        }
+    }
+
 }
 
 void HRC_FIB::handleSubscription(Packet *packet) {
-    packet->kill();
+    checked_output_push(OUT_PORT_DISCARD, packet);
 }
 
 void HRC_FIB::handleAnnouncement(Packet *packet) {

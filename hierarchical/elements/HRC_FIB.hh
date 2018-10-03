@@ -35,7 +35,7 @@ public:
 
     const char *class_name() const override { return "HRC_FIB"; };
 
-    const char *port_count() const override { return "-3/-3"; };
+    const char *port_count() const override { return "-3/-4"; };
 
     const char *processing() const override { return PUSH; };
 
@@ -48,7 +48,7 @@ private:
     HRC_ReadWriteLock _lock;
 
 
-    void handleData(Packet *packet);
+    void handleInterest(Packet *packet);
     void handleSubscription(Packet *packet);
     void handleAnnouncement(Packet *packet);
 

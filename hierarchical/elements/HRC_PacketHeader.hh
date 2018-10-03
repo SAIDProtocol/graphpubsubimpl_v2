@@ -19,6 +19,10 @@ CLICK_DECLS
 #define HRC_PACKET_PRIO_PUBLICATION (3)
 #define HRC_PACKET_PRIO_SUBSCRIPTION (2)
 
+#define HRC_PACKET_PRIO_UNDEFINED (8)
+
+#define HRC_DEFAULT_HEAD_ROOM (40) // Ether header + IP header
+
 
 union hrc_packet {
     uint8_t type;
@@ -65,7 +69,7 @@ static inline void hrc_packet_interest_init(void *pkt, const char *name, uint32_
 }
 
 static inline void
-hrc_packet_interest_print(const void *pkt, const String &label, uint32_t packetSize, uint32_t printLimit) {
+hrc_packet_interest_print(const void *pkt, const String &label, uint32_t packetSize, uint32_t printLimit, uint32_t headRoom, uint32_t tailRoom) {
     auto tmpPayloadBuf = new char[2 * printLimit + 1];
     auto name = hrc_packet_interest_get_name(pkt);
     auto size = hrc_packet_interest_get_size(pkt);
@@ -75,8 +79,8 @@ hrc_packet_interest_print(const void *pkt, const String &label, uint32_t packetS
     for (decltype(size) i = 0; i < payloadSize && i < size && i < printLimit; ++i)
         snprintf(tmpPayloadBuf + i * 2, 3, "%02x", payload[i]);
 
-    click_chatter("%s: INTEREST name=%s | size=%d | payload=%d | content(lim%d)=%s", label.c_str(), name, size,
-                  payloadSize, printLimit, tmpPayloadBuf);
+    click_chatter("%s: INTEREST name=%s | size=%d | payload=%d | content(lim %d)=%s | [h:%d,t:%d]", label.c_str(), name, size,
+                  payloadSize, printLimit, tmpPayloadBuf, headRoom, tailRoom);
     delete[] tmpPayloadBuf;
 }
 

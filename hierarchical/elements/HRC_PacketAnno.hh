@@ -11,9 +11,9 @@
 
 CLICK_DECLS
 
-#define HRC_ANNO_OFFSET_DST_GUID (0)
-#define HRC_ANNO_SIZE_DST_GUID (sizeof(const char *))
-#define HRC_ANNO_DST_GUID ((const char *)((p)->anno_u8() + HRC_ANNO_OFFSET_DST_GUID))
+#define HRC_ANNO_OFFSET_DST_NAME (0)
+#define HRC_ANNO_SIZE_DST_NAME (sizeof(const char *))
+#define HRC_ANNO_DST_NAME(p) ((char **)((p)->anno_u8() + HRC_ANNO_OFFSET_DST_NAME))
 
 #define HRC_ANNO_OFFSET_SRC_IP  (16)
 #define HRC_ANNO_SIZE_SRC_IP  4
