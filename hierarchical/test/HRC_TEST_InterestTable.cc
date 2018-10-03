@@ -33,15 +33,16 @@ void HRC_TEST_InterestTable::exactMatch(const String &param) {
 void HRC_TEST_InterestTable::set(const String &param) {
     click_chatter("Set: %s", _set.c_str());
     _set = param;
-    String conf = cp_uncomment(param);
-    const char *s = conf.begin(), *end = conf.end();
+    auto conf = cp_uncomment(param);
+    auto s = conf.begin(), end = conf.end();
 
     while (s < end) {
-        const char *nl = find(s, end, '\n');
+        auto nl = find(s, end, '\n');
         uint32_t val;
-        String line = conf.substring(s, nl);
-        String first_word = cp_shift_spacevec(line);
-        if (cp_real10(line, 0, &val)) {
+        auto line = conf.substring(s, nl);
+        auto first_word = cp_shift_spacevec(line);
+
+        if (cp_integer(line, &val)) {
             click_chatter(R"(Parse line "%s" "%s")", first_word.c_str(), line.c_str());
             click_chatter(R"(  set: "%s" -> %d)", first_word.c_str(), val);
             _table.set(first_word.c_str(), val);
@@ -118,23 +119,23 @@ int HRC_TEST_InterestTable::initialize(ErrorHandler *errh) {
     _table.set("/a//eeeee", 4);
     click_chatter("set /a/ccc -> 5");
     _table.set("/a/ccc", 5);
-    _table.forEach(printInterestTable);
+    print();
 
     click_chatter("remove /a//eeeee");
     _table.remove("/a//eeeee");
-    _table.forEach(printInterestTable);
+    print();
 
     click_chatter("remove /a/bb");
     _table.remove("/a/bb");
-    _table.forEach(printInterestTable);
+    print();
 
     click_chatter("remove /a/bb");
     _table.remove("/a/bb");
-    _table.forEach(printInterestTable);
+    print();
 
     click_chatter("remove /a/bb/dddd");
     _table.remove("/a/bb/dddd");
-    _table.forEach(printInterestTable);
+    print();
 
     click_chatter("set /a/bb -> 1");
     _table.set("/a/bb", 1);
@@ -144,7 +145,7 @@ int HRC_TEST_InterestTable::initialize(ErrorHandler *errh) {
     _table.set("/a/bb/dddd", 3);
     click_chatter("set /a//eeeee -> 4");
     _table.set("/a//eeeee", 4);
-    _table.forEach(printInterestTable);
+    print();
 
     return 0;
 }

@@ -3,7 +3,10 @@
 //
 
 #include "HRC_FIB.hh"
+#include "HRC_Helper.h"
 #include <click/args.hh>
+
+//#define HRC_FIB_DEBUG
 
 CLICK_DECLS
 
@@ -30,10 +33,91 @@ void HRC_FIB::push(int port, Packet *p) {
     }
 }
 
-int HRC_FIB::parseArgFile(String &fileName, ErrorHandler *errh) {
-    (void) fileName;
-    (void) errh;
+int HRC_FIB::parseArgFile(String &fileName, ErrorHandler *errh, HRC_InterestTable<hrc_na_t> &interestTable) {
+    auto fp = fopen(fileName.c_str(), "r");
+    if (fp == nullptr) {
+        errh->error("Cannot read file %s", fileName.c_str());
+        return -1;
+    }
+
+    char *line = nullptr, *tmp;
+    size_t len = 0, lineNum = 0;
+    ssize_t pos;
+
+    IntArg intArg;
+    uint32_t numNa;
+    hrc_na_t na;
+    const char *name;
+
+    while (getline(&line, &len, fp) != -1) {
+        lineNum++;
+#ifdef HRC_FIB_DEBUG
+        errh->debug(">>>>>>>>>>line: %d<<<<<<<<<<", lineNum);
+        errh->debug("line: %s", line);
+#endif
+        tmp = line;
+        pos = skipEmpty(tmp);
+        //empty line
+        if (pos == -1) continue;
+
+        tmp += pos;
+#ifdef HRC_FIB_DEBUG
+        errh->debug("skip empty pos: %d, line: %s", pos, tmp);
+#endif
+        // comment skip
+        if (*tmp == '#') continue;
+
+        // name
+        pos = getPart(tmp);
+#ifdef HRC_FIB_DEBUG
+        errh->debug("get part pos: %d, line: %s", pos, tmp);
+#endif
+        name = tmp;
+#ifdef HRC_FIB_DEBUG
+        errh->debug("name: %s", name);
+#endif
+        tmp += pos;
+
+        // na
+#ifdef HRC_FIB_DEBUG
+        errh->debug("line: %s", tmp);
+#endif
+        pos = skipEmpty(tmp);
+        if (pos == -1) {
+            errh->error("Skip line %d: cannot find na.", lineNum);
+            continue;
+        }
+        tmp += pos;
+        pos = getPart(tmp);
+#ifdef HRC_FIB_DEBUG
+        errh->debug("get part pos: %d, line: %s", pos, tmp);
+#endif
+        if (!intArg.parse(tmp, numNa)) {
+            errh->error("Skip line %d: cannot parse na.", lineNum);
+            continue;
+        }
+        hrc_na_set_val(&na, numNa);
+#ifdef HRC_FIB_DEBUG
+        errh->debug("na: %s", hrc_na_unparse(&na).c_str());
+#endif
+        tmp += pos;
+        (void) tmp;
+
+#ifdef HRC_FIB_DEBUG
+        errh->debug("Entry: %s -> %s", name, hrc_na_unparse(&na).c_str());
+#endif
+        interestTable.set(name, na);
+    }
+    fclose(fp);
+    if (line) free(line);
     return 0;
+}
+
+static ErrorHandler *tmpErrh;
+
+static void printInterestTable(const std::string &prefix, hrc_na_t &v) {
+    if (tmpErrh)
+        tmpErrh->debug("%s (%p) -> %s (%p)", prefix.c_str(), &prefix, hrc_na_unparse(&v).c_str(), &v);
 }
 
 int HRC_FIB::configure(Vector<String> &conf, ErrorHandler *errh) {
@@ -43,7 +127,14 @@ int HRC_FIB::configure(Vector<String> &conf, ErrorHandler *errh) {
                 .complete() < 0) {
         return -1;
     }
-    if (parseArgFile(fileName, errh) < 0) return -1;
+    if (parseArgFile(fileName, errh, _interestTable) < 0) return -1;
+
+    {
+        tmpErrh = errh;
+        _interestTable.forEach(printInterestTable);
+        tmpErrh = nullptr;
+
+    }
 
     return 0;
 }

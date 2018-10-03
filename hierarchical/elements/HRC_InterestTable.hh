@@ -16,9 +16,6 @@ CLICK_DECLS
 //#define HRC_CONTENTNAME_DEBUG
 
 template<typename T>
-class HRC_InterestTableEntry;
-
-template<typename T>
 class HRC_InterestTableEntry {
 public:
     HRC_InterestTableEntry() : _val(nullptr) {}
@@ -122,7 +119,7 @@ public:
     inline void forEach(std::string prefix, void (*fun)(const std::string &, T &)) const {
         if (hasVal()) fun(prefix, *_val);
         for (const auto &it : _children) {
-            std::string newPrefix = prefix + it.first.unparse().c_str() + "/";
+            auto newPrefix = prefix + it.first.unparse().c_str() + "/";
             it.second->forEach(newPrefix, fun);
         }
     }

@@ -12,7 +12,9 @@
 #include <click/ipaddress.hh>
 #include <click/glue.hh>
 #include <unordered_map>
+#include "HRC_InterestTable.hh"
 #include "HRC_NA.hh"
+#include "HRC_ReadWriteLock.hh"
 
 CLICK_DECLS
 
@@ -24,7 +26,7 @@ public:
     static const int OUT_PORT_DATA = 0;
     static const int OUT_PORT_SUBSCRIPTION = 1;
     static const int OUT_PORT_ANNOUNCEMENT = 2;
-    static int parseArgFile(String &fileName, ErrorHandler *errh);
+    static int parseArgFile(String &fileName, ErrorHandler *errh, HRC_InterestTable<hrc_na_t> &interestTable);
 
     HRC_FIB() CLICK_COLD;
 
@@ -41,6 +43,9 @@ public:
     void push(int port, Packet *p) override;
 
 private:
+    HRC_InterestTable<hrc_na_t> _interestTable;
+    HRC_ReadWriteLock _lock;
+
 
     void handleData(Packet *packet);
     void handleSubscription(Packet *packet);
