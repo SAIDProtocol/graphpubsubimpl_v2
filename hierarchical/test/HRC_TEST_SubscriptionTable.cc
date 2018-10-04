@@ -3,10 +3,14 @@
 //
 
 #include "HRC_TEST_SubscriptionTable.hh"
+#include <click/args.hh>
 #include <click/error.hh>
 #include <click/straccum.hh>
+#include <sstream>
 
 CLICK_DECLS
+
+//#define HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
 
 static ErrorHandler *_errhForPrint;
 
@@ -68,21 +72,149 @@ int HRC_TEST_SubscriptionTable::change_param(const String &s, Element *e, void *
 }
 
 void HRC_TEST_SubscriptionTable::insert(const String &param, ErrorHandler *errh) {
-    (void) param;
-    (void) errh;
+    _insert = param;
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+    click_chatter("Insert: %s", _insert.c_str());
+#endif
+
+    std::istringstream stream(_insert.c_str());
+    std::string line, strVal;
+    IntArg intArg;
+    uint32_t val;
+    int lineNum = 0;
+    while (std::getline(stream, line)) {
+        ++lineNum;
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+        click_chatter(R"(line %d: "%s")", lineNum, line.c_str());
+#endif
+        std::string name, strNum;
+        auto skip = line.find_first_not_of(" \t\r\n");
+        if (skip == std::string::npos) {
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+            click_chatter("Empty line");
+#endif
+            continue;
+        }
+        // comment
+        if (line[skip] == '#') {
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+            click_chatter("Comment line");
+#endif
+            continue;
+        }
+        line = line.substr(skip);
+
+        auto size = line.find_first_of(" \t\r\n");
+        skip = line.find_first_not_of(" \t\r\n", size);
+        if (size == std::string::npos || skip == std::string::npos) {
+            click_chatter("Skipping line %d with only 1 part.", lineNum);
+            continue;
+        } else {
+            name = line.substr(0, size);
+            line = line.substr(skip);
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+            click_chatter(R"(Name: "%s", line: "%s")", name.c_str(), line.c_str());
+#endif
+        }
+
+        size = line.find_first_of(" \t\r\n");
+        strVal = size == std::string::npos ? line.substr() : line.substr(0, size);
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+        click_chatter(R"(NA: "%s")", strVal.c_str());
+#endif
+        if (!intArg.parse(strVal.c_str(), val)) {
+            click_chatter("Skipping line %d, cannot parse val.", lineNum);
+            continue;
+        }
+        insert(name.c_str(), val, errh, false);
+    }
+    print(errh);
 }
 
 void HRC_TEST_SubscriptionTable::remove(const String &param, ErrorHandler *errh) {
-    (void) param;
-    (void) errh;
+    _remove = param;
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+    click_chatter("Remove: %s", _remove.c_str());
+#endif
+
+    std::istringstream stream(_remove.c_str());
+    std::string line, strVal;
+    IntArg intArg;
+    uint32_t val;
+    int lineNum = 0;
+    while (std::getline(stream, line)) {
+        ++lineNum;
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+        click_chatter(R"(line %d: "%s")", lineNum, line.c_str());
+#endif
+        std::string name, strNum;
+        auto skip = line.find_first_not_of(" \t\r\n");
+        if (skip == std::string::npos) {
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+            click_chatter("Empty line");
+#endif
+            continue;
+        }
+        // comment
+        if (line[skip] == '#') {
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+            click_chatter("Comment line");
+#endif
+            continue;
+        }
+        line = line.substr(skip);
+
+        auto size = line.find_first_of(" \t\r\n");
+        skip = line.find_first_not_of(" \t\r\n", size);
+        if (size == std::string::npos) {
+            // the whole line is a name
+            // remove name directly
+            remove(line.c_str(), errh, false);
+            continue;
+        }
+        if (skip == std::string::npos) {
+            // the line has a name and spaces
+            // remove name directly
+            name = line.substr(0, size);
+            remove(name.c_str(), errh, false);
+            continue;
+        }
+        // the line has a name and a value
+
+        name = line.substr(0, size);
+        line = line.substr(skip);
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+        click_chatter(R"(Name: "%s", line: "%s")", name.c_str(), line.c_str());
+#endif
+
+        size = line.find_first_of(" \t\r\n");
+        strVal = size == std::string::npos ? line : line.substr(0, size);
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+        click_chatter(R"(NA: "%s")", strVal.c_str());
+#endif
+        if (!intArg.parse(strVal.c_str(), val)) {
+            click_chatter("Skipping line %d, cannot parse val.", lineNum);
+            continue;
+        }
+        remove(name.c_str(), val, errh, false);
+    }
+    print(errh);
 }
 
 void HRC_TEST_SubscriptionTable::lookup(const String &param, ErrorHandler *errh) {
+    _lookup = param;
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+    click_chatter("Lookup: %s", _lookup.c_str());
+#endif
     StringAccum sa;
     errh->debug("** LKP %s ->%s", param.c_str(), fillValueList(sa, _table.lookup(param.c_str())).c_str());
 }
 
 void HRC_TEST_SubscriptionTable::exactMatch(const String &param, ErrorHandler *errh) {
+    _exactMatch = param;
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+    click_chatter("ExactMatch: %s", _exactMatch.c_str());
+#endif
     StringAccum sa;
     auto res = _table.exactMatch(param.c_str());
     if (!res)
@@ -92,6 +224,9 @@ void HRC_TEST_SubscriptionTable::exactMatch(const String &param, ErrorHandler *e
 }
 
 void HRC_TEST_SubscriptionTable::print(ErrorHandler *errh) {
+#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+    click_chatter("Print");
+#endif
     _errhForPrint = errh;
     errh->debug(">>>> Printing table... >>>>");
     _table.forEach(printSubscriptionTable);
@@ -119,8 +254,6 @@ void HRC_TEST_SubscriptionTable::remove(const char *name, int val, ErrorHandler 
 
 
 int HRC_TEST_SubscriptionTable::initialize(ErrorHandler *errh) {
-    StringAccum sa;
-
     insert("sports/football", 1, errh, false);
     insert("sports/football", 2, errh, true);
     insert("sports", 3, errh, true);

@@ -37,12 +37,12 @@ void HRC_TEST_InterestTable::exactMatch(const String &param) {
 }
 
 void HRC_TEST_InterestTable::set(const String &param) {
+    _set = param;
 #ifdef HRC_TEST_INTERESTTABLE_DEBUG
     click_chatter("Set: %s", _set.c_str());
 #endif
-    _set = param;
 
-    std::istringstream stream(param.c_str());
+    std::istringstream stream(_set.c_str());
     std::string line, strVal;
     IntArg intArg;
     uint32_t val;
