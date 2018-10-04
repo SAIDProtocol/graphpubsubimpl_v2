@@ -53,6 +53,11 @@ static inline void printTime() {
 
 }
 
+static inline void copyEther(uint8_t *target, const uint8_t *src) {
+    memcpy(target, src, 6);
+}
+
+
 CLICK_ENDDECLS
 
 #endif //CLICK_HRC_HELPER_HH
