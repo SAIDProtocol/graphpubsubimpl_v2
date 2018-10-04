@@ -2,7 +2,7 @@
 // Created by jiachen on 10/3/18.
 //
 
-#include "HRC_TEST_SubscriptionTable.hh"
+#include "HRC_TEST_MulticastTable.hh"
 #include <click/args.hh>
 #include <click/error.hh>
 #include <click/straccum.hh>
@@ -10,15 +10,15 @@
 
 CLICK_DECLS
 
-//#define HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+//#define HRC_TEST_MULTICASTTABLE_DEBUG
 
 static ErrorHandler *_errhForPrint;
 
-HRC_TEST_SubscriptionTable::HRC_TEST_SubscriptionTable() {
+HRC_TEST_MulticastTable::HRC_TEST_MulticastTable() {
     _errhForPrint = ErrorHandler::default_handler();
 };
 
-HRC_TEST_SubscriptionTable::~HRC_TEST_SubscriptionTable() = default;
+HRC_TEST_MulticastTable::~HRC_TEST_MulticastTable() = default;
 
 static inline StringAccum &fillValueList(StringAccum &sa, const std::unordered_set<int> &val) {
     for (auto i : val) {
@@ -29,12 +29,12 @@ static inline StringAccum &fillValueList(StringAccum &sa, const std::unordered_s
 }
 
 
-static void printSubscriptionTable(const std::string &prefix, const std::unordered_set<int> &val) {
+static void printMulticastTable(const std::string &prefix, const std::unordered_set<int> &val) {
     StringAccum sa;
     _errhForPrint->debug("  %s -> (%p)%s", prefix.c_str(), &val, fillValueList(sa, val).c_str());
 }
 
-void HRC_TEST_SubscriptionTable::add_handlers() {
+void HRC_TEST_MulticastTable::add_handlers() {
     add_data_handlers("lookup", Handler::f_read | Handler::f_write, &_lookup);
     add_write_handler("lookup", change_param, h_lookup, Handler::f_raw);
     add_data_handlers("exactMatch", Handler::f_read | Handler::f_write, &_exactMatch);
@@ -46,8 +46,8 @@ void HRC_TEST_SubscriptionTable::add_handlers() {
     add_write_handler("print", change_param, h_print, Handler::BUTTON);
 }
 
-int HRC_TEST_SubscriptionTable::change_param(const String &s, Element *e, void *vparam, ErrorHandler *) {
-    auto elem = dynamic_cast<HRC_TEST_SubscriptionTable *>(e);
+int HRC_TEST_MulticastTable::change_param(const String &s, Element *e, void *vparam, ErrorHandler *) {
+    auto elem = dynamic_cast<HRC_TEST_MulticastTable *>(e);
 
     switch (reinterpret_cast<intptr_t >(vparam)) {
         case h_lookup:
@@ -71,9 +71,9 @@ int HRC_TEST_SubscriptionTable::change_param(const String &s, Element *e, void *
     return 0;
 }
 
-void HRC_TEST_SubscriptionTable::insert(const String &param, ErrorHandler *errh) {
+void HRC_TEST_MulticastTable::insert(const String &param, ErrorHandler *errh) {
     _insert = param;
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
     click_chatter("Insert: %s", _insert.c_str());
 #endif
 
@@ -84,20 +84,20 @@ void HRC_TEST_SubscriptionTable::insert(const String &param, ErrorHandler *errh)
     int lineNum = 0;
     while (std::getline(stream, line)) {
         ++lineNum;
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
         click_chatter(R"(line %d: "%s")", lineNum, line.c_str());
 #endif
         std::string name, strNum;
         auto skip = line.find_first_not_of(" \t\r\n");
         if (skip == std::string::npos) {
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
             click_chatter("Empty line");
 #endif
             continue;
         }
         // comment
         if (line[skip] == '#') {
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
             click_chatter("Comment line");
 #endif
             continue;
@@ -112,14 +112,14 @@ void HRC_TEST_SubscriptionTable::insert(const String &param, ErrorHandler *errh)
         } else {
             name = line.substr(0, size);
             line = line.substr(skip);
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
             click_chatter(R"(Name: "%s", line: "%s")", name.c_str(), line.c_str());
 #endif
         }
 
         size = line.find_first_of(" \t\r\n");
-        strVal = size == std::string::npos ? line.substr() : line.substr(0, size);
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+        strVal = size == std::string::npos ? line : line.substr(0, size);
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
         click_chatter(R"(NA: "%s")", strVal.c_str());
 #endif
         if (!intArg.parse(strVal.c_str(), val)) {
@@ -131,9 +131,9 @@ void HRC_TEST_SubscriptionTable::insert(const String &param, ErrorHandler *errh)
     print(errh);
 }
 
-void HRC_TEST_SubscriptionTable::remove(const String &param, ErrorHandler *errh) {
+void HRC_TEST_MulticastTable::remove(const String &param, ErrorHandler *errh) {
     _remove = param;
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
     click_chatter("Remove: %s", _remove.c_str());
 #endif
 
@@ -144,20 +144,20 @@ void HRC_TEST_SubscriptionTable::remove(const String &param, ErrorHandler *errh)
     int lineNum = 0;
     while (std::getline(stream, line)) {
         ++lineNum;
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
         click_chatter(R"(line %d: "%s")", lineNum, line.c_str());
 #endif
         std::string name, strNum;
         auto skip = line.find_first_not_of(" \t\r\n");
         if (skip == std::string::npos) {
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
             click_chatter("Empty line");
 #endif
             continue;
         }
         // comment
         if (line[skip] == '#') {
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
             click_chatter("Comment line");
 #endif
             continue;
@@ -183,13 +183,13 @@ void HRC_TEST_SubscriptionTable::remove(const String &param, ErrorHandler *errh)
 
         name = line.substr(0, size);
         line = line.substr(skip);
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
         click_chatter(R"(Name: "%s", line: "%s")", name.c_str(), line.c_str());
 #endif
 
         size = line.find_first_of(" \t\r\n");
         strVal = size == std::string::npos ? line : line.substr(0, size);
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
         click_chatter(R"(NA: "%s")", strVal.c_str());
 #endif
         if (!intArg.parse(strVal.c_str(), val)) {
@@ -201,18 +201,18 @@ void HRC_TEST_SubscriptionTable::remove(const String &param, ErrorHandler *errh)
     print(errh);
 }
 
-void HRC_TEST_SubscriptionTable::lookup(const String &param, ErrorHandler *errh) {
+void HRC_TEST_MulticastTable::lookup(const String &param, ErrorHandler *errh) {
     _lookup = param;
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
     click_chatter("Lookup: %s", _lookup.c_str());
 #endif
     StringAccum sa;
     errh->debug("** LKP %s ->%s", param.c_str(), fillValueList(sa, _table.lookup(param.c_str())).c_str());
 }
 
-void HRC_TEST_SubscriptionTable::exactMatch(const String &param, ErrorHandler *errh) {
+void HRC_TEST_MulticastTable::exactMatch(const String &param, ErrorHandler *errh) {
     _exactMatch = param;
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
     click_chatter("ExactMatch: %s", _exactMatch.c_str());
 #endif
     StringAccum sa;
@@ -223,37 +223,37 @@ void HRC_TEST_SubscriptionTable::exactMatch(const String &param, ErrorHandler *e
         errh->debug("** MAT %s -> (%p)%s", param.c_str(), res, fillValueList(sa, *res).c_str());
 }
 
-void HRC_TEST_SubscriptionTable::print(ErrorHandler *errh) {
-#ifdef HRC_TEST_SUBSCRIPTIONTABLE_DEBUG
+void HRC_TEST_MulticastTable::print(ErrorHandler *errh) {
+#ifdef HRC_TEST_MULTICASTTABLE_DEBUG
     click_chatter("Print");
 #endif
     _errhForPrint = errh;
     errh->debug(">>>> Printing table... >>>>");
-    _table.forEach(printSubscriptionTable);
+    _table.forEach(printMulticastTable);
     errh->debug("<<<< End Printing table... <<<<");
     _errhForPrint = ErrorHandler::default_handler();
 }
 
-void HRC_TEST_SubscriptionTable::insert(const char *name, int val, ErrorHandler *errh, bool printTable) {
+void HRC_TEST_MulticastTable::insert(const char *name, int val, ErrorHandler *errh, bool printTable) {
     errh->debug("** INS %s -> %d", name, val);
     _table.insert(name, val);
     if (printTable) print(errh);
 }
 
-void HRC_TEST_SubscriptionTable::remove(const char *name, ErrorHandler *errh, bool printTable) {
+void HRC_TEST_MulticastTable::remove(const char *name, ErrorHandler *errh, bool printTable) {
     errh->debug("** REM %s", name);
     _table.remove(name);
     if (printTable) print(errh);
 }
 
-void HRC_TEST_SubscriptionTable::remove(const char *name, int val, ErrorHandler *errh, bool printTable) {
+void HRC_TEST_MulticastTable::remove(const char *name, int val, ErrorHandler *errh, bool printTable) {
     errh->debug("** REM %s -> %d", name, val);
     _table.remove(name, val);
     if (printTable) print(errh);
 }
 
 
-int HRC_TEST_SubscriptionTable::initialize(ErrorHandler *errh) {
+int HRC_TEST_MulticastTable::initialize(ErrorHandler *errh) {
     insert("sports/football", 1, errh, false);
     insert("sports/football", 2, errh, true);
     insert("sports", 3, errh, true);
@@ -291,10 +291,13 @@ int HRC_TEST_SubscriptionTable::initialize(ErrorHandler *errh) {
     exactMatch("sports/football//test", errh);
     lookup("sports/football//test", errh);
 
+    _lookup = "";
+    _exactMatch = "";
+
     return 0;
 }
 
 
 CLICK_ENDDECLS
 
-EXPORT_ELEMENT(HRC_TEST_SubscriptionTable)
+EXPORT_ELEMENT(HRC_TEST_MulticastTable)

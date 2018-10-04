@@ -83,7 +83,7 @@ void HRC_TEST_InterestTable::set(const String &param) {
         }
 
         size = line.find_first_of(" \t\r\n");
-        strVal = size == std::string::npos ? line.substr() : line.substr(0, size);
+        strVal = size == std::string::npos ? line : line.substr(0, size);
 #ifdef HRC_TEST_INTERESTTABLE_DEBUG
         click_chatter(R"(NA: "%s")", strVal.c_str());
 #endif

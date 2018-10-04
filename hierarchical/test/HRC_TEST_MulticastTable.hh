@@ -2,22 +2,22 @@
 // Created by jiachen on 10/3/18.
 //
 
-#ifndef CLICK_HRC_TEST_SUBSCRIPTIONTABLE_HH
-#define CLICK_HRC_TEST_SUBSCRIPTIONTABLE_HH
+#ifndef CLICK_HRC_TEST_MULTICASTTABLE_HH
+#define CLICK_HRC_TEST_MULTICASTTABLE_HH
 
 #include <click/config.h>
 #include <click/element.hh>
 #include <click/glue.hh>
-#include "../elements/HRC_SubscriptionTable.hh"
+#include "../elements/HRC_MulticastTable.hh"
 
 
-class HRC_TEST_SubscriptionTable : public Element {
+class HRC_TEST_MulticastTable : public Element {
 public:
-    HRC_TEST_SubscriptionTable() CLICK_COLD;
+    HRC_TEST_MulticastTable() CLICK_COLD;
 
-    ~HRC_TEST_SubscriptionTable() override CLICK_COLD;
+    ~HRC_TEST_MulticastTable() override CLICK_COLD;
 
-    const char *class_name() const override { return "HRC_TEST_SubscriptionTable"; };
+    const char *class_name() const override { return "HRC_TEST_MulticastTable"; };
 
     const char *port_count() const override { return PORTS_0_0; };
 
@@ -38,7 +38,7 @@ public:
     void print(ErrorHandler *errh);
 
 private:
-    HRC_SubscriptionTable<int> _table;
+    HRC_MulticastTable<int> _table;
     enum {
         h_lookup, h_exact, h_print, h_insert, h_remove
     };
@@ -55,4 +55,4 @@ private:
 };
 
 
-#endif //CLICK_HRC_TEST_SUBSCRIPTIONTABLE_HH
+#endif //CLICK_HRC_TEST_MULTICASTTABLE_HH

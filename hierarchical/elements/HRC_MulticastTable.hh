@@ -2,8 +2,8 @@
 // Created by jiachen on 10/3/18.
 //
 
-#ifndef CLICK_HRC_SUBSCRIPTIONTABLE_HH
-#define CLICK_HRC_SUBSCRIPTIONTABLE_HH
+#ifndef CLICK_HRC_MULTICASTTABLE_HH
+#define CLICK_HRC_MULTICASTTABLE_HH
 
 #include <click/config.h>
 #include <click/glue.hh>
@@ -14,16 +14,16 @@
 
 CLICK_DECLS
 
-//#define HRC_SUBSCRIPTIONTABLEDEBUG
+//#define HRC_MULTICASTTABLEDEBUG
 
 template<typename T>
-class HRC_SubscriptionTableEntry {
+class HRC_MulticastTableEntry {
 public:
-    HRC_SubscriptionTableEntry() = default;
+    HRC_MulticastTableEntry() = default;
 
-    ~HRC_SubscriptionTableEntry() {
+    ~HRC_MulticastTableEntry() {
         for (auto &it : _children) {
-#ifdef HRC_SUBSCRIPTIONTABLEDEBUG
+#ifdef HRC_MULTICASTTABLEDEBUG
             click_chatter("DELETE CHILD");
 #endif
             delete it.second;
@@ -51,7 +51,7 @@ public:
             // no such child
             if (it == _children.end()) return false;
             if (it->second->remove(name)) { // if child becomes empty
-#ifdef HRC_SUBSCRIPTIONTABLEDEBUG
+#ifdef HRC_MULTICASTTABLEDEBUG
                 click_chatter("DELETE CHILD");
 #endif
                 delete it->second;
@@ -76,7 +76,7 @@ public:
             // no such child
             if (it == _children.end()) return false;
             if (it->second->remove(name, val)) { // if child becomes empty
-#ifdef HRC_SUBSCRIPTIONTABLEDEBUG
+#ifdef HRC_MULTICASTTABLEDEBUG
                 click_chatter("DELETE CHILD");
 #endif
                 delete it->second;
@@ -97,10 +97,10 @@ public:
             name += part.get_size();
             auto &child = _children[part];
             if (!child) {
-#ifdef HRC_SUBSCRIPTIONTABLEDEBUG
+#ifdef HRC_MULTICASTTABLEDEBUG
                 click_chatter("NEW CHILD");
 #endif
-                child = new HRC_SubscriptionTableEntry<T>();
+                child = new HRC_MulticastTableEntry<T>();
             }
             return child->insert(name, val);
         }
@@ -148,16 +148,16 @@ private:
 
     inline void clearVal() { _vals.clear(); }
 
-    std::unordered_map<CNPart, HRC_SubscriptionTableEntry<T> *> _children;
+    std::unordered_map<CNPart, HRC_MulticastTableEntry<T> *> _children;
     std::unordered_set<T> _vals;
 };
 
 template<typename T>
-class HRC_SubscriptionTable {
+class HRC_MulticastTable {
 public:
-    HRC_SubscriptionTable() = default;
+    HRC_MulticastTable() = default;
 
-    ~HRC_SubscriptionTable() = default;
+    ~HRC_MulticastTable() = default;
 
     inline bool remove(const char *name) { return _root.remove(name); }
 
@@ -178,9 +178,9 @@ public:
     }
 
 private:
-    HRC_SubscriptionTableEntry<T> _root;
+    HRC_MulticastTableEntry<T> _root;
 };
 
 CLICK_ENDDECLS
 
-#endif //CLICK_HRC_SUBSCRIPTIONTABLE_HH
+#endif //CLICK_HRC_MULTICASTTABLE_HH
