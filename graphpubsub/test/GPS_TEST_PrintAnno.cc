@@ -4,7 +4,7 @@
 
 #include "GPS_TEST_PrintAnno.hh"
 #include "../elements/GPS_NA.hh"
-#include "../elements/GPS_PacketAnno.h"
+#include "../elements/GPS_PacketAnno.hh"
 #include <click/args.hh>
 #include <click/etheraddress.hh>
 #include <click/ipaddress.hh>

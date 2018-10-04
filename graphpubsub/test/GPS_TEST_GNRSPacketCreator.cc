@@ -4,7 +4,7 @@
 
 #include "GPS_TEST_GNRSPacketCreator.hh"
 #include "../elements/GPS_PacketHeader.hh"
-#include "../elements/GPS_PacketAnno.h"
+#include "../elements/GPS_PacketAnno.hh"
 #include <click/args.hh>
 #include <click/error.hh>
 

@@ -3,7 +3,7 @@
 //
 
 #include "GPS_PrioAnnotator.hh"
-#include "GPS_PacketAnno.h"
+#include "GPS_PacketAnno.hh"
 #include "GPS_PacketHeader.hh"
 
 CLICK_DECLS

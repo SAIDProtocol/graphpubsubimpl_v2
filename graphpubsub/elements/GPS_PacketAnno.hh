@@ -2,13 +2,14 @@
 // Created by jiachen on 9/20/18.
 //
 
-#ifndef CLICK_GPS_PACKETANNO_H
-#define CLICK_GPS_PACKETANNO_H
+#ifndef CLICK_GPS_PACKETANNO_HH
+#define CLICK_GPS_PACKETANNO_HH
 
-#include <click/cxxprotect.h>
 #include <net/ethernet.h>
+#include <click/config.h>
+#include <click/glue.hh>
 
-CLICK_CXX_PROTECT
+CLICK_DECLS
 
 #define GPS_ANNO_OFFSET_SRC_IP  (16)
 #define GPS_ANNO_SIZE_SRC_IP  4
@@ -43,8 +44,6 @@ CLICK_CXX_PROTECT
 #define GPS_ANNO_PRIO(p)  ((p)->anno_u8() + GPS_ANNO_OFFSET_PRIO)
 
 
-CLICK_CXX_UNPROTECT
+CLICK_ENDDECLS
 
-#include <click/cxxunprotect.h>
-
-#endif //CLICK_GPS_PACKETANNO_H
+#endif //CLICK_GPS_PACKETANNO_HH

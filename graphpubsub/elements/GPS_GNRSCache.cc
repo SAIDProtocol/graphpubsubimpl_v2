@@ -3,7 +3,7 @@
 //
 
 #include "GPS_GNRSCache.hh"
-#include "GPS_PacketAnno.h"
+#include "GPS_PacketAnno.hh"
 #include "GPS_PacketHeader.hh"
 #include <click/args.hh>
 

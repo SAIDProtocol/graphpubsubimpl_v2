@@ -6,7 +6,7 @@
 #include "../elements/GPS_RoutingTable.hh"
 #include "../elements/GPS_SubscriptionTable.hh"
 #include "../elements/GPS_PacketHeader.hh"
-#include "../elements/GPS_PacketAnno.h"
+#include "../elements/GPS_PacketAnno.hh"
 #include <vector>
 #include <unordered_set>
 #include <random>

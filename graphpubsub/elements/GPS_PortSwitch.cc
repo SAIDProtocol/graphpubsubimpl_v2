@@ -3,7 +3,7 @@
 //
 
 #include "GPS_PortSwitch.hh"
-#include "GPS_PacketAnno.h"
+#include "GPS_PacketAnno.hh"
 
 CLICK_DECLS
 
