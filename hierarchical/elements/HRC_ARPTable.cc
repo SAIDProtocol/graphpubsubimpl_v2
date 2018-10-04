@@ -3,7 +3,7 @@
 //
 
 #include "HRC_ARPTable.hh"
-#include "HRC_Helper.h"
+#include "HRC_Helper.hh"
 #include "HRC_PacketAnno.hh"
 #include <click/error.hh>
 #include <click/args.hh>

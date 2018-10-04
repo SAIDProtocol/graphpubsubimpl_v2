@@ -47,10 +47,10 @@ int HRC_TEST_ContentName::configure(Vector<String> &conf, ErrorHandler *errh) {
     for (const char *tmp = name.c_str();;) {
         if (*tmp == '/') ++tmp;
         if (*tmp == '\0') break;
-        CNPart part(tmp, false);
-        errh->debug(">>Part (%d): %s %s", part.get_size(), part.unparse().c_str(),
-                    hasCmp ? (part == cmp.c_str() ? "EQ" : "NEQ") : "");
-        tmp += part.get_size();
+        CNPart cnPart(tmp, false);
+        errh->debug(">>Part (%d): %s %s", cnPart.get_size(), cnPart.unparse().c_str(),
+                    hasCmp ? (cnPart == cmp.c_str() ? "EQ" : "NEQ") : "");
+        tmp += cnPart.get_size();
     }
 
 

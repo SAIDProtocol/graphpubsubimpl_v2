@@ -48,7 +48,7 @@ public:
         if (*name == NAME_SEPARATOR) name++;
         if (*name == '\0') {
             removeVal();
-            return _children.empty();
+            return isLeaf();
         } else {
             CNPart part(name, false);
             name += part.get_size();
@@ -61,7 +61,7 @@ public:
 #endif
                 delete it->second;
                 _children.erase(it);
-                return _children.empty() && (!_val);
+                return isLeaf() && !hasVal();
             }
             return false;
         }

@@ -3,7 +3,7 @@
 //
 
 #include "HRC_FIB.hh"
-#include "HRC_Helper.h"
+#include "HRC_Helper.hh"
 #include "HRC_PacketHeader.hh"
 #include "HRC_PacketAnno.hh"
 #include <click/args.hh>
@@ -149,11 +149,14 @@ void HRC_FIB::handleInterest(Packet *packet) {
         packet->kill();
     } else {
         const char *name = hrc_packet_interest_get_name(header);
+        _lock.acquire_read();
         auto na = _interestTable.longestPrefixMatch(name);
         if (na) {
             hrc_na_set_val(HRC_ANNO_NEXT_HOP_NA(packet), na);
+            _lock.release_read();
             checked_output_push(OUT_PORT_DATA, packet);
         } else {
+            _lock.release_read();
             checked_output_push(OUT_PORT_DISCARD, packet);
         }
     }

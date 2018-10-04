@@ -2,14 +2,18 @@
 // Created by jiachen on 9/20/18.
 //
 
-#ifndef CLICK_HRC_HELPER_H
-#define CLICK_HRC_HELPER_H
+#ifndef CLICK_HRC_HELPER_HH
+#define CLICK_HRC_HELPER_HH
 
-#include <click/cxxprotect.h>
+#include <click/config.h>
+#include <click/glue.hh>
+#include <cstdint>
+#include <cstring>
+#include <ctime>
 #include <sys/types.h>
 #include <sys/time.h>
 
-CLICK_CXX_PROTECT
+CLICK_DECLS
 
 static inline ssize_t skipEmpty(const char *line) {
     char c;
@@ -49,9 +53,7 @@ static inline void printTime() {
 
 }
 
-CLICK_CXX_UNPROTECT
+CLICK_ENDDECLS
 
-#include <click/cxxunprotect.h>
-
-#endif //CLICK_HRC_HELPER_H
+#endif //CLICK_HRC_HELPER_HH
 
