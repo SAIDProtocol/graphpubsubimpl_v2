@@ -25,7 +25,6 @@ public:
 
     void add_handlers() override CLICK_COLD;
 
-//    int configure(Vector<String> &conf, ErrorHandler *errh) override CLICK_COLD;
     int initialize(ErrorHandler *errh) override CLICK_COLD;
 
 
@@ -33,15 +32,16 @@ public:
 
     void exactMatch(const String &param);
 
-    void set(const String& param);
+    void set(const String &param);
 
     void remove(const String &param);
+
+    void print(ErrorHandler *errh);
 
     void print();
 
 private:
     HRC_InterestTable<int> _table;
-
 
     enum {
         h_lpm, h_exact, h_print, h_set, h_remove

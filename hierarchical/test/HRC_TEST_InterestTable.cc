@@ -15,8 +15,11 @@ HRC_TEST_InterestTable::HRC_TEST_InterestTable() = default;
 HRC_TEST_InterestTable::~HRC_TEST_InterestTable() = default;
 
 
-static void printInterestTable(const std::string &prefix, int &v) {
-    click_chatter("%s (%p) -> %d (%p)", prefix.c_str(), &prefix, v, &v);
+static ErrorHandler *_errhForPrint;
+
+static void printInterestTable(const std::string &prefix, const int &v) {
+    if (_errhForPrint) _errhForPrint->debug("%s (%p) -> %d (%p)", prefix.c_str(), &prefix, v, &v);
+    else click_chatter("%s (%p) -> %d (%p)", prefix.c_str(), &prefix, v, &v);
 }
 
 void HRC_TEST_InterestTable::longestPrefixMatch(const String &param) {
@@ -101,21 +104,31 @@ void HRC_TEST_InterestTable::remove(const String &param) {
     print();
 }
 
+void HRC_TEST_InterestTable::print(ErrorHandler *errh) {
+    _errhForPrint = errh;
+    errh->debug(">>>> Printing table... >>>>");
+    _table.forEach(printInterestTable);
+    errh->debug("<<<< End Printing table... <<<<");
+    _errhForPrint = nullptr;
+}
+
 void HRC_TEST_InterestTable::print() {
+    _errhForPrint = nullptr;
     click_chatter(">>>> Printing table... >>>>");
     _table.forEach(printInterestTable);
     click_chatter("<<<< End Printing table... <<<<");
+    _errhForPrint = nullptr;
 }
+
 
 int HRC_TEST_InterestTable::change_param(const String &s, Element *e, void *vparam, ErrorHandler *errh) {
     (void) errh;
     auto elem = dynamic_cast<HRC_TEST_InterestTable *>(e);
 
     switch (reinterpret_cast<intptr_t >(vparam)) {
-        case h_lpm: {
+        case h_lpm:
             elem->longestPrefixMatch(s);
             break;
-        }
         case h_exact:
             elem->exactMatch(s);
             break;
@@ -149,43 +162,43 @@ void HRC_TEST_InterestTable::add_handlers() {
 
 int HRC_TEST_InterestTable::initialize(ErrorHandler *errh) {
     (void) errh;
-    click_chatter("set /a/bb -> 1");
+    errh->debug("set /a/bb -> 1");
     _table.set("/a/bb", 1);
-    click_chatter("set /a/ccc -> 2");
+    errh->debug("set /a/ccc -> 2");
     _table.set("/a/ccc", 2);
-    click_chatter("set /a/bb/dddd -> 3");
+    errh->debug("set /a/bb/dddd -> 3");
     _table.set("/a/bb/dddd", 3);
-    click_chatter("set /a//eeeee -> 4");
+    errh->debug("set /a//eeeee -> 4");
     _table.set("/a//eeeee", 4);
-    click_chatter("set /a/ccc -> 5");
+    errh->debug("set /a/ccc -> 5");
     _table.set("/a/ccc", 5);
-    print();
+    print(errh);
 
-    click_chatter("remove /a//eeeee");
+    errh->debug("remove /a//eeeee");
     _table.remove("/a//eeeee");
-    print();
+    print(errh);
 
-    click_chatter("remove /a/bb");
+    errh->debug("remove /a/bb");
     _table.remove("/a/bb");
-    print();
+    print(errh);
 
-    click_chatter("remove /a/bb");
+    errh->debug("remove /a/bb");
     _table.remove("/a/bb");
-    print();
+    print(errh);
 
-    click_chatter("remove /a/bb/dddd");
+    errh->debug("remove /a/bb/dddd");
     _table.remove("/a/bb/dddd");
-    print();
+    print(errh);
 
-    click_chatter("set /a/bb -> 1");
+    errh->debug("set /a/bb -> 1");
     _table.set("/a/bb", 1);
-    click_chatter("set /a/ccc -> 2");
+    errh->debug("set /a/ccc -> 2");
     _table.set("/a/ccc", 2);
-    click_chatter("set /a/bb/dddd -> 3");
+    errh->debug("set /a/bb/dddd -> 3");
     _table.set("/a/bb/dddd", 3);
-    click_chatter("set /a//eeeee -> 4");
+    errh->debug("set /a//eeeee -> 4");
     _table.set("/a//eeeee", 4);
-    print();
+    print(errh);
 
     return 0;
 }

@@ -13,7 +13,7 @@
 
 CLICK_DECLS
 
-//#define HRC_CONTENTNAME_DEBUG
+//#define HRC_INTERESTTABLE_DEBUG
 
 template<typename T>
 class HRC_InterestTableEntry {
@@ -22,13 +22,13 @@ public:
 
     ~HRC_InterestTableEntry() {
         for (auto &it : _children) {
-#ifdef HRC_CONTENTNAME_DEBUG
+#ifdef HRC_INTERESTTABLE_DEBUG
             click_chatter("DELETE CHILD");
 #endif
             delete it.second;
         }
         if (_val) {
-#ifdef HRC_CONTENTNAME_DEBUG
+#ifdef HRC_INTERESTTABLE_DEBUG
             click_chatter("DELETE VAL");
 #endif
             delete _val;
@@ -37,7 +37,7 @@ public:
 
     inline bool hasVal() const { return _val != nullptr; }
 
-    inline T &getVal() const { return *_val; }
+    inline const T &getVal() const { return *_val; }
 
     inline bool isLeaf() const { return _children.empty(); }
 
@@ -56,7 +56,7 @@ public:
             // no such child
             if (it == _children.end()) return false;
             if (it->second->remove(name)) { // if child becomes empty
-#ifdef HRC_CONTENTNAME_DEBUG
+#ifdef HRC_INTERESTTABLE_DEBUG
                 click_chatter("DELETE CHILD");
 #endif
                 delete it->second;
@@ -77,7 +77,7 @@ public:
             name += part.get_size();
             auto &child = _children[part];
             if (!child) {
-#ifdef HRC_CONTENTNAME_DEBUG
+#ifdef HRC_INTERESTTABLE_DEBUG
                 click_chatter("NEW CHILD");
 #endif
                 child = new HRC_InterestTableEntry<T>();
@@ -86,7 +86,7 @@ public:
         }
     }
 
-    inline T *longestPrefixMatch(const char *name) const {
+    inline const T *longestPrefixMatch(const char *name) const {
         if (*name == NAME_SEPARATOR) name++;
         if (*name == '\0') {
             return _val;
@@ -102,7 +102,7 @@ public:
         }
     }
 
-    inline T *exactMatch(const char *name) const {
+    inline const T *exactMatch(const char *name) const {
         if (*name == NAME_SEPARATOR) name++;
         if (*name == '\0') {
             return _val;
@@ -116,7 +116,7 @@ public:
         }
     }
 
-    inline void forEach(std::string prefix, void (*fun)(const std::string &, T &)) const {
+    inline void forEach(std::string prefix, void (*fun)(const std::string &, const T &)) const {
         if (hasVal()) fun(prefix, *_val);
         for (const auto &it : _children) {
             auto newPrefix = prefix + it.first.unparse().c_str() + "/";
@@ -130,7 +130,7 @@ private:
             *_val = t;
             return false;
         } else {
-#ifdef HRC_CONTENTNAME_DEBUG
+#ifdef HRC_INTERESTTABLE_DEBUG
             click_chatter("NEW VAL");
 #endif
             _val = new T(t);
@@ -141,7 +141,7 @@ private:
     inline void removeVal() {
         if (_val) {
             delete _val;
-#ifdef HRC_CONTENTNAME_DEBUG
+#ifdef HRC_INTERESTTABLE_DEBUG
             click_chatter("DELETE VAL");
 #endif
             _val = nullptr;
@@ -163,11 +163,11 @@ public:
 
     inline bool set(const char *name, const T &val) { return _root.set(name, val); }
 
-    inline T *longestPrefixMatch(const char *name) const { return _root.longestPrefixMatch(name); }
+    inline const T *longestPrefixMatch(const char *name) const { return _root.longestPrefixMatch(name); }
 
-    inline T *exactMatch(const char *name) const { return _root.exactMatch(name); }
+    inline const T *exactMatch(const char *name) const { return _root.exactMatch(name); }
 
-    inline void forEach(void (*fun)(const std::string &, T &)) const { _root.forEach("/", fun); };
+    inline void forEach(void (*fun)(const std::string &, const T &)) const { _root.forEach("/", fun); };
 
 
 private:
