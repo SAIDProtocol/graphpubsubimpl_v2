@@ -77,9 +77,7 @@ public:
 
     HRC_ARPTable() CLICK_COLD;
 
-    ~HRC_ARPTable() override
-
-    CLICK_COLD;
+    ~HRC_ARPTable() override CLICK_COLD;
 
     const char *class_name() const override { return "HRC_ARPTable"; };
 
@@ -87,9 +85,7 @@ public:
 
     const char *processing() const override { return PUSH; };
 
-    int configure(Vector<String> &conf, ErrorHandler *errh) override
-
-    CLICK_COLD;
+    int configure(Vector<String> &conf, ErrorHandler *errh) override CLICK_COLD;
 
     void push(int port, Packet *p) override;
 

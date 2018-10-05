@@ -13,7 +13,7 @@ arp::HRC_ARPTable(FILENAME $arp);
 fib::HRC_FIB(FILENAME $fib, NA $myNa);
 
 TimedSource(1, $content, LIMIT 1, STOP true)
-    -> HRC_TEST_InterestWrapper(NAME $name)
+    -> HRC_TEST_DataWrapper(INTEREST, NAME $name)
     -> HRC_TEST_PrintPacket("**interestWrapper[0]")
     -> HRC_TEST_PrintAnno("**interestWrapper[0]")
     -> EtherEncap(0x27c0, $srcEther, 7:8:9:a:b:c)

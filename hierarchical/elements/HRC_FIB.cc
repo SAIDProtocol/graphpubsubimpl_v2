@@ -15,7 +15,7 @@ CLICK_DECLS
 static ErrorHandler *tmpErrh;
 
 static void printInterestTable(const std::string &prefix, const hrc_na_t &v) {
-    tmpErrh->debug("%s (%p) -> %s (%p)", prefix.c_str(), &prefix, hrc_na_unparse(&v).c_str(), &v);
+    tmpErrh->debug("  %s (%p) -> %s (%p)", prefix.c_str(), &prefix, hrc_na_unparse(&v).c_str(), &v);
 }
 
 HRC_FIB::HRC_FIB() {

@@ -8,6 +8,7 @@
 #include <click/config.h>
 #include <click/glue.hh>
 #include <click/string.hh>
+#include <cstring>
 
 CLICK_DECLS
 
@@ -59,7 +60,12 @@ static inline void hrc_packet_interest_set_size(void *pkt, uint32_t size) {
     reinterpret_cast<hrc_packet_interest_t *>(pkt)->size = htonl(size);
 }
 
-static inline size_t hrc_packet_interest_get_header_size(const char *name) {
+static inline size_t hrc_packet_interest_calculate_header_size(const char *name) {
+    return sizeof(hrc_packet_interest_t) + strlen(name) + 1;
+}
+
+static inline size_t hrc_packet_interest_get_header_size(const void *pkt) {
+    const char *name = reinterpret_cast<const hrc_packet_interest_t *>(pkt)->name;
     return sizeof(hrc_packet_interest_t) + strlen(name) + 1;
 }
 
@@ -70,20 +76,76 @@ static inline void hrc_packet_interest_init(void *pkt, const char *name, uint32_
 }
 
 static inline void
-hrc_packet_interest_print(const void *pkt, const String &label, uint32_t packetSize, uint32_t printLimit, uint32_t headRoom, uint32_t tailRoom) {
+hrc_packet_interest_print(const void *pkt, const String &label, uint32_t packetSize, uint32_t printLimit,
+                          uint32_t headRoom, uint32_t tailRoom) {
     auto tmpPayloadBuf = new char[2 * printLimit + 1];
     auto name = hrc_packet_interest_get_name(pkt);
     auto size = hrc_packet_interest_get_size(pkt);
-    auto headerSize = hrc_packet_interest_get_header_size(name);
+    auto headerSize = hrc_packet_interest_calculate_header_size(name);
     auto payloadSize = packetSize - headerSize;
     auto payload = reinterpret_cast<const char *>(pkt) + headerSize;
     for (decltype(size) i = 0; i < payloadSize && i < size && i < printLimit; ++i)
         snprintf(tmpPayloadBuf + i * 2, 3, "%02x", payload[i]);
 
-    click_chatter("%s: INTEREST name=%s | size=%d | payload=%d | content(lim %d)=%s | [h:%d,t:%d]", label.c_str(), name, size,
+    click_chatter("%s: INTEREST name=%s | size=%d | payload=%d | content(lim %d)=%s | [h:%d,t:%d]", label.c_str(), name,
+                  size,
                   payloadSize, printLimit, tmpPayloadBuf, headRoom, tailRoom);
     delete[] tmpPayloadBuf;
 }
+
+struct hrc_packet_publication {
+    hrc_packet_t premable;
+    uint32_t size;
+    char name[];
+};
+
+typedef struct hrc_packet_publication hrc_packet_publication_t;
+
+static inline uint32_t hrc_packet_publication_get_size(const void *pkt) {
+    return ntohl(reinterpret_cast<const hrc_packet_publication_t *>(pkt)->size);
+}
+
+static inline const char *hrc_packet_publication_get_name(const void *pkt) {
+    return reinterpret_cast<const hrc_packet_publication_t *>(pkt)->name;
+}
+
+static inline void hrc_packet_publication_set_size(void *pkt, uint32_t size) {
+    reinterpret_cast<hrc_packet_publication_t *>(pkt)->size = htonl(size);
+}
+
+static inline size_t hrc_packet_publication_calculate_header_size(const char *name) {
+    return sizeof(hrc_packet_publication_t) + strlen(name) + 1;
+}
+
+static inline size_t hrc_packet_publication_get_header_size(const void *pkt) {
+    const char *name = reinterpret_cast<const hrc_packet_publication_t *>(pkt)->name;
+    return sizeof(hrc_packet_publication_t) + strlen(name) + 1;
+}
+
+static inline void hrc_packet_publication_init(void *pkt, const char *name, uint32_t size) {
+    hrc_packet_set_type(pkt, HRC_PACKET_TYPE_PUBLICATION);
+    hrc_packet_publication_set_size(pkt, size);
+    strcpy(reinterpret_cast<hrc_packet_publication_t *>(pkt)->name, name);
+}
+
+static inline void
+hrc_packet_publication_print(const void *pkt, const String &label, uint32_t packetSize, uint32_t printLimit,
+                             uint32_t headRoom, uint32_t tailRoom) {
+    auto tmpPayloadBuf = new char[2 * printLimit + 1];
+    auto name = hrc_packet_publication_get_name(pkt);
+    auto size = hrc_packet_publication_get_size(pkt);
+    auto headerSize = hrc_packet_publication_calculate_header_size(name);
+    auto payloadSize = packetSize - headerSize;
+    auto payload = reinterpret_cast<const char *>(pkt) + headerSize;
+    for (decltype(size) i = 0; i < payloadSize && i < size && i < printLimit; ++i)
+        snprintf(tmpPayloadBuf + i * 2, 3, "%02x", payload[i]);
+
+    click_chatter("%s: PUBLICATION name=%s | size=%d | payload=%d | content(lim %d)=%s | [h:%d,t:%d]", label.c_str(),
+                  name, size,
+                  payloadSize, printLimit, tmpPayloadBuf, headRoom, tailRoom);
+    delete[] tmpPayloadBuf;
+}
+
 
 CLICK_ENDDECLS
 

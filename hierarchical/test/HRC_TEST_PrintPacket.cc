@@ -25,6 +25,7 @@ Packet *HRC_TEST_PrintPacket::simple_action(Packet *p) {
                 hrc_packet_interest_print(p->data(), _label, p->length(), _limit, p->headroom(), p->tailroom());
                 break;
             case HRC_PACKET_TYPE_PUBLICATION:
+                hrc_packet_publication_print(p->data(), _label, p->length(), _limit, p->headroom(), p->tailroom());
                 break;
             case HRC_PACKET_TYPE_SUBSCRIPTION:
                 break;

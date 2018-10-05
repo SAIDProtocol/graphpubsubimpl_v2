@@ -177,7 +177,7 @@ int HRC_ARPTable::configure(Vector<String> &conf, ErrorHandler *errh) {
 
     for (auto &it:_naAddresses) {
         const HRC_NAAddress &val = it.second;
-        errh->debug("%s -> %d | %s | %s",
+        errh->debug("  %s -> %d | %s | %s",
                     hrc_na_unparse(&it.first).c_str(),
                     val.getPort(),
                     val.getEther().unparse_colon().c_str(),
