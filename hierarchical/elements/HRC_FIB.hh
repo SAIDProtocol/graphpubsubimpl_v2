@@ -23,10 +23,9 @@ public:
     static const int IN_PORT_DATA = 0;
     static const int IN_PORT_SUBSCRIPTION = 1;
     static const int IN_PORT_ANNOUNCEMENT = 2;
-    static const int OUT_PORT_DATA = 0;
-    static const int OUT_PORT_SUBSCRIPTION = 1;
-    static const int OUT_PORT_ANNOUNCEMENT = 2;
-    static const int OUT_PORT_DISCARD = 3;
+    static const int OUT_PORT_TO_OTHER_ROUTER = 0;
+    static const int OUT_PORT_TO_LOCAL = 1;
+    static const int OUT_PORT_DISCARD = 2;
     static int parseArgFile(String &fileName, ErrorHandler *errh, HRC_InterestTable<hrc_na_t> &interestTable);
 
     HRC_FIB() CLICK_COLD;
@@ -35,7 +34,7 @@ public:
 
     const char *class_name() const override { return "HRC_FIB"; };
 
-    const char *port_count() const override { return "-3/-4"; };
+    const char *port_count() const override { return "-3/-3"; };
 
     const char *processing() const override { return PUSH; };
 
@@ -45,8 +44,10 @@ public:
 
 private:
     HRC_InterestTable<hrc_na_t> _interestTable;
+    hrc_na_t _myNa;
     HRC_ReadWriteLock _lock;
 
+    void forwardBasedOnName(Packet *packet, const char *name);
 
     void handleInterest(Packet *packet);
     void handleSubscription(Packet *packet);

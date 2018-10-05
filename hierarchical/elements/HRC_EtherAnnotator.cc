@@ -16,10 +16,9 @@ HRC_EtherAnnotator::HRC_EtherAnnotator() = default;
 HRC_EtherAnnotator::~HRC_EtherAnnotator() = default;
 
 Packet *HRC_EtherAnnotator::simple_action(Packet *p) {
-    click_chatter("%p %p", p->ether_header(), p->data());
     auto etherHeader = p->ether_header();
-    copyEther(HRC_ANNO_SRC_ETHER(p), etherHeader->ether_shost);
-    *HRC_ANNO_SRC_PORT(p) = _myPort;
+    copyEther(HRC_ANNO_PREV_HOP_ETHER(p), etherHeader->ether_shost);
+    *HRC_ANNO_PREV_HOP_PORT(p) = _myPort;
     return p;
 }
 

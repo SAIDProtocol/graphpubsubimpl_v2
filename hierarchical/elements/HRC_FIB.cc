@@ -12,7 +12,15 @@
 
 CLICK_DECLS
 
-HRC_FIB::HRC_FIB() = default;
+static ErrorHandler *tmpErrh;
+
+static void printInterestTable(const std::string &prefix, const hrc_na_t &v) {
+    tmpErrh->debug("%s (%p) -> %s (%p)", prefix.c_str(), &prefix, hrc_na_unparse(&v).c_str(), &v);
+}
+
+HRC_FIB::HRC_FIB() {
+    tmpErrh = ErrorHandler::default_handler();
+}
 
 HRC_FIB::~HRC_FIB() = default;
 
@@ -29,7 +37,7 @@ void HRC_FIB::push(int port, Packet *p) {
             break;
         default:
             // from other ports?? should not reach here!
-            click_chatter("[HRC_FIB::push] Got packet from unexpected port: %d, discarding...", port);
+            tmpErrh->debug("[HRC_FIB::push] Got packet from unexpected port: %d, discarding...", port);
             p->kill();
             break;
     }
@@ -115,56 +123,61 @@ int HRC_FIB::parseArgFile(String &fileName, ErrorHandler *errh, HRC_InterestTabl
     return 0;
 }
 
-static ErrorHandler *tmpErrh;
-
-static void printInterestTable(const std::string &prefix, const hrc_na_t &v) {
-    if (tmpErrh) tmpErrh->debug("%s (%p) -> %s (%p)", prefix.c_str(), &prefix, hrc_na_unparse(&v).c_str(), &v);
-    else click_chatter("%s (%p) -> %s (%p)", prefix.c_str(), &prefix, hrc_na_unparse(&v).c_str(), &v);
-}
-
 int HRC_FIB::configure(Vector<String> &conf, ErrorHandler *errh) {
     String fileName;
+    uint32_t numMyNa;
     if (Args(conf, this, errh)
                 .read_mp("FILENAME", FilenameArg(), fileName)
+                .read_mp("NA", numMyNa)
                 .complete() < 0) {
         return -1;
     }
     if (parseArgFile(fileName, errh, _interestTable) < 0) return -1;
+    hrc_na_set_val(&_myNa, numMyNa);
 
     {
         tmpErrh = errh;
         _interestTable.forEach(printInterestTable);
-        tmpErrh = nullptr;
+        tmpErrh = ErrorHandler::default_handler();
     }
     return 0;
 }
 
+void HRC_FIB::forwardBasedOnName(Packet *packet, const char *name) {
+    _lock.acquire_read();
+    auto na = _interestTable.longestPrefixMatch(name);
+    if (na) {
+        hrc_na_set_val(HRC_ANNO_NEXT_HOP_NA(packet), na);
+        int outPort = (*na == _myNa) ? OUT_PORT_TO_LOCAL : OUT_PORT_TO_OTHER_ROUTER;
+        _lock.release_read();
+        checked_output_push(outPort, packet);
+    } else {
+        _lock.release_read();
+        checked_output_push(OUT_PORT_DISCARD, packet);
+    }
+}
 
 void HRC_FIB::handleInterest(Packet *packet) {
     auto header = packet->data();
     auto type = hrc_packet_get_type(header);
     if (unlikely(type != HRC_PACKET_TYPE_INTEREST)) {
-        click_chatter("[HRC_FIB::handleInterest] Error packet type (%02x). Should be interest (%02x)", type,
-                      HRC_PACKET_TYPE_INTEREST);
+        tmpErrh->debug("[HRC_FIB::handleInterest] Error packet type (%02x). Should be interest (%02x)", type,
+                       HRC_PACKET_TYPE_INTEREST);
         packet->kill();
-    } else {
-        const char *name = hrc_packet_interest_get_name(header);
-        _lock.acquire_read();
-        auto na = _interestTable.longestPrefixMatch(name);
-        if (na) {
-            hrc_na_set_val(HRC_ANNO_NEXT_HOP_NA(packet), na);
-            _lock.release_read();
-            checked_output_push(OUT_PORT_DATA, packet);
-        } else {
-            _lock.release_read();
-            checked_output_push(OUT_PORT_DISCARD, packet);
-        }
-    }
-
+    } else
+        forwardBasedOnName(packet, hrc_packet_interest_get_name(header));
 }
 
 void HRC_FIB::handleSubscription(Packet *packet) {
-    checked_output_push(OUT_PORT_DISCARD, packet);
+    auto header = packet->data();
+    auto type = hrc_packet_get_type(header);
+    if (unlikely(type != HRC_PACKET_TYPE_SUBSCRIPTION)) {
+        tmpErrh->debug("[HRC_FIB::handleSubscription] Error packet type (%02x). Should be subscription (%02x)", type,
+                       HRC_PACKET_TYPE_SUBSCRIPTION);
+        packet->kill();
+    } else {
+        forwardBasedOnName(packet, *HRC_ANNO_DST_NAME(packet));
+    }
 }
 
 void HRC_FIB::handleAnnouncement(Packet *packet) {

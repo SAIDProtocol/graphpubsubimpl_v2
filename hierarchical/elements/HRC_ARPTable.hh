@@ -18,9 +18,11 @@ CLICK_DECLS
 
 class HRC_NAAddress {
 public:
-    HRC_NAAddress() : _port(0) {}
 
-    HRC_NAAddress(uint32_t port, EtherAddress ether, IPAddress ip) : _port(port), _ether(ether), _ip(ip) {}
+    HRC_NAAddress(uint32_t port, const EtherAddress &ether, const IPAddress &ip) :
+            _port(port), _ether(ether), _ip(ip), _hash(getHash(port, ether, ip)) {}
+
+    HRC_NAAddress() : HRC_NAAddress(0, EtherAddress(), IPAddress()) {}
 
     ~HRC_NAAddress() = default;
 
@@ -30,11 +32,35 @@ public:
 
     const uint32_t &getPort() const { return _port; }
 
+    size_t getHash() const { return _hash; }
+
+    bool operator==(const HRC_NAAddress &rhs) const {
+        return _port == rhs._port &&
+               _ether == rhs._ether &&
+               _ip == rhs._ip;
+    }
+
+    bool operator!=(const HRC_NAAddress &rhs) const {
+        return !(rhs == *this);
+    }
+
 private:
+    static size_t getHash(uint32_t port, const EtherAddress &ether, const IPAddress &ip) {
+        return port ^ ether.hashcode() ^ ip.hashcode();
+    }
+
     uint32_t _port;
     EtherAddress _ether;
     IPAddress _ip;
+    size_t _hash;
 };
+
+namespace std {
+    template<>
+    struct hash<HRC_NAAddress> {
+        size_t operator()(const HRC_NAAddress &addr) const { return hash<size_t>()(addr.getHash()); }
+    };
+}
 
 class HRC_ARPTable : public Element {
 public:
@@ -45,25 +71,36 @@ public:
     static const int OUT_PORT_DISCARD = 2;
 
     static int
-    parseArgFile(const String &fileName, ErrorHandler *errh, std::unordered_map<hrc_na_t, HRC_NAAddress> &naAddresses);
+    parseArgFile(const String &fileName, ErrorHandler *errh,
+                 std::unordered_map<hrc_na_t, HRC_NAAddress> &naAddresses,
+                 std::unordered_map<HRC_NAAddress, hrc_na_t> &inverseNaAddresses);
 
     HRC_ARPTable() CLICK_COLD;
 
-    ~HRC_ARPTable() override CLICK_COLD;
+    ~HRC_ARPTable() override
+
+    CLICK_COLD;
 
     const char *class_name() const override { return "HRC_ARPTable"; };
 
-    const char *port_count() const override { return "-2/-2"; };
+    const char *port_count() const override { return "-2/-3"; };
 
     const char *processing() const override { return PUSH; };
 
-    int configure(Vector<String> &conf, ErrorHandler *errh) override CLICK_COLD;
+    int configure(Vector<String> &conf, ErrorHandler *errh) override
+
+    CLICK_COLD;
 
     void push(int port, Packet *p) override;
 
 
 private:
+    static void addNAAddress(const hrc_na_t &na, const HRC_NAAddress &addr,
+                             std::unordered_map<hrc_na_t, HRC_NAAddress> &naAddresses,
+                             std::unordered_map<HRC_NAAddress, hrc_na_t> &inverseNaAddresses);
+
     std::unordered_map<hrc_na_t, HRC_NAAddress> _naAddresses;
+    std::unordered_map<HRC_NAAddress, hrc_na_t> _inverseNaAddresses;
     HRC_ReadWriteLock _lock;
 
     void handleOutData(Packet *p);

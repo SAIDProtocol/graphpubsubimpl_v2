@@ -5,6 +5,7 @@
 #include "HRC_ARPTable.hh"
 #include "HRC_Helper.hh"
 #include "HRC_PacketAnno.hh"
+#include "HRC_PacketHeader.hh"
 #include <click/error.hh>
 #include <click/args.hh>
 
@@ -17,7 +18,8 @@ HRC_ARPTable::HRC_ARPTable() = default;
 HRC_ARPTable::~HRC_ARPTable() = default;
 
 int HRC_ARPTable::parseArgFile(const String &fileName, ErrorHandler *errh,
-                               std::unordered_map<hrc_na_t, HRC_NAAddress> &naAddresses) {
+                               std::unordered_map<hrc_na_t, HRC_NAAddress> &naAddresses,
+                               std::unordered_map<HRC_NAAddress, hrc_na_t> &inverseNaAddresses) {
     auto fp = fopen(fileName.c_str(), "r");
     if (fp == nullptr) {
         errh->error("Cannot read file %s", fileName.c_str());
@@ -121,7 +123,7 @@ int HRC_ARPTable::parseArgFile(const String &fileName, ErrorHandler *errh,
 #endif
         pos = skipEmpty(tmp);
         if (pos == -1) {
-            ip = IPAddress::make_broadcast();
+            ip = IPAddress();
         } else {
             tmp += pos;
             pos = getPart(tmp);
@@ -143,13 +145,26 @@ int HRC_ARPTable::parseArgFile(const String &fileName, ErrorHandler *errh,
         errh->debug("Entry: %s -> %d (%s, %s)", hrc_na_unparse(&na).c_str(), port, ether.unparse().c_str(),
                     ip.unparse().c_str());
 #endif
-
-        naAddresses[na] = HRC_NAAddress(port, ether, ip);
+        addNAAddress(na, HRC_NAAddress(port, ether, ip), naAddresses, inverseNaAddresses);
     }
     fclose(fp);
     if (line) free(line);
     return 0;
 }
+
+void HRC_ARPTable::addNAAddress(const hrc_na_t &na, const HRC_NAAddress &addr,
+                                std::unordered_map<hrc_na_t, HRC_NAAddress> &naAddresses,
+                                std::unordered_map<HRC_NAAddress, hrc_na_t> &inverseNaAddresses) {
+    // find original bindings and remove
+    auto it1 = naAddresses.find(na);
+    if (it1 != naAddresses.end()) inverseNaAddresses.erase(it1->second);
+    auto it2 = inverseNaAddresses.find(addr);
+    if (it2 != inverseNaAddresses.end()) naAddresses.erase(it2->second);
+
+    naAddresses[na] = addr;
+    inverseNaAddresses[addr] = na;
+}
+
 
 int HRC_ARPTable::configure(Vector<String> &conf, ErrorHandler *errh) {
     String fileName;
@@ -158,7 +173,7 @@ int HRC_ARPTable::configure(Vector<String> &conf, ErrorHandler *errh) {
                 .complete() < 0) {
         return -1;
     }
-    if (parseArgFile(fileName, errh, _naAddresses) < 0) return -1;
+    if (parseArgFile(fileName, errh, _naAddresses, _inverseNaAddresses) < 0) return -1;
 
     for (auto &it:_naAddresses) {
         const HRC_NAAddress &val = it.second;
@@ -223,14 +238,32 @@ void HRC_ARPTable::handleOutData(Packet *packet) {
 }
 
 void HRC_ARPTable::handleInPacket(Packet *packet) {
-    // if is lsa, update table with na in packet, ether and ip in anno. discard directly
-    // else, check if it is from neighbor, if so, annotate srcNa, to OUT_PORT_IN_PACKET
-    //             else to OUT_PORT_DISCARD
 
-    _lock.acquire_write();
+    auto header = packet->data();
 
-    _lock.release_write();
-    packet->kill();
+//  if is lsa, update table with na in packet, ether and ip in anno. discard directly
+    if (hrc_packet_get_type(header) == HRC_PACKET_TYPE_LSA) {
+        click_chatter("This is LSA packet!");
+//    _lock.acquire_write();
+//
+//    _lock.release_write();
+        packet->kill();
+    } else {
+        auto ether = reinterpret_cast<EtherAddress *> (HRC_ANNO_PREV_HOP_ETHER(packet));
+        auto ip = reinterpret_cast<IPAddress *> (HRC_ANNO_PREV_HOP_IP(packet));
+        auto port = HRC_ANNO_PREV_HOP_PORT(packet);
+        // else, check if it is from neighbor, if so, annotate srcNa, to OUT_PORT_IN_PACKET
+        //             else to OUT_PORT_DISCARD
+        click_chatter("eth=%s, ip=%s, port=%d", ether->unparse_colon().c_str(), ip->unparse().c_str(), *port);
+        auto it = _inverseNaAddresses.find(HRC_NAAddress(*port, *ether, *ip));
+        if (it == _inverseNaAddresses.end()) {
+            click_chatter("Cannot find neighbor NA with port=%d, ether=%s, ip=%s, discard...", *port, ether->unparse_colon().c_str(), ip->unparse().c_str());
+            checked_output_push(OUT_PORT_DISCARD, packet);
+        } else {
+            *HRC_ANNO_PREV_HOP_NA(packet) = it->second;
+            checked_output_push(OUT_PORT_IN_PACKET, packet);
+        }
+    }
 }
 
 CLICK_ENDDECLS

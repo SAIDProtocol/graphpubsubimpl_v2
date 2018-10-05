@@ -20,11 +20,12 @@ Packet *HRC_TEST_PrintAnno::simple_action(Packet *p) {
     auto name = *HRC_ANNO_DST_NAME(p);
 
     click_chatter(
-            "%s: srcIp=%s | srcEther=%s | srcPort=%d |  nextHopNa=%s | nextHopIp=%s | nextHopEther=%s | nextHopPort=%d | prio=%d | dstName=(%p)%s",
+            "%s: prevHopNa=%s | prevHopIp=%s | prevHopEther=%s | prevHopPort=%d |  nextHopNa=%s | nextHopIp=%s | nextHopEther=%s | nextHopPort=%d | prio=%d | dstName=(%p)%s",
             _label.c_str(),
-            IPAddress(HRC_ANNO_SRC_IP(p)).unparse().c_str(),
-            EtherAddress(HRC_ANNO_SRC_ETHER(p)).unparse_colon().c_str(),
-            *HRC_ANNO_SRC_PORT(p),
+            hrc_na_unparse(HRC_ANNO_PREV_HOP_NA(p)).c_str(),
+            IPAddress(HRC_ANNO_PREV_HOP_IP(p)).unparse().c_str(),
+            EtherAddress(HRC_ANNO_PREV_HOP_ETHER(p)).unparse_colon().c_str(),
+            *HRC_ANNO_PREV_HOP_PORT(p),
             hrc_na_unparse(HRC_ANNO_NEXT_HOP_NA(p)).c_str(),
             IPAddress(HRC_ANNO_NEXT_HOP_IP(p)).unparse().c_str(),
             EtherAddress(HRC_ANNO_NEXT_HOP_ETHER(p)).unparse_colon().c_str(),
