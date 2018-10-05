@@ -174,11 +174,11 @@ int HRC_ARPTable::configure(Vector<String> &conf, ErrorHandler *errh) {
 
 void HRC_ARPTable::push(int port, Packet *p) {
     switch (port) {
-        case IN_PORT_DATA:
-            handleData(p);
+        case IN_PORT_OUT_DATA:
+            handleOutData(p);
             break;
-        case IN_PORT_LSA:
-            handleLSA(p);
+        case IN_PORT_IN_PACKET:
+            handleInPacket(p);
             break;
         default:
             // from other ports?? should not reach here!
@@ -188,7 +188,7 @@ void HRC_ARPTable::push(int port, Packet *p) {
     }
 }
 
-void HRC_ARPTable::handleData(Packet *packet) {
+void HRC_ARPTable::handleOutData(Packet *packet) {
     auto na = HRC_ANNO_NEXT_HOP_NA(packet);
 
     if (unlikely(hrc_na_is_broadcast(na))) { // broadcast
@@ -201,7 +201,7 @@ void HRC_ARPTable::handleData(Packet *packet) {
             *reinterpret_cast<EtherAddress *> (HRC_ANNO_NEXT_HOP_ETHER(p)) = val.getEther();
             *reinterpret_cast<IPAddress *> (HRC_ANNO_NEXT_HOP_IP(p)) = val.getIp();
             *HRC_ANNO_NEXT_HOP_PORT(p) = static_cast<uint8_t>(val.getPort());
-            checked_output_push(OUT_PORT_DATA, p);
+            checked_output_push(OUT_PORT_OUT_DATA, p);
         }
         _lock.release_read();
         packet->kill();
@@ -217,12 +217,16 @@ void HRC_ARPTable::handleData(Packet *packet) {
             *reinterpret_cast<IPAddress *> (HRC_ANNO_NEXT_HOP_IP(packet)) = val.getIp();
             *HRC_ANNO_NEXT_HOP_PORT(packet) = static_cast<uint8_t>(val.getPort());
             _lock.release_read();
-            checked_output_push(OUT_PORT_DATA, packet);
+            checked_output_push(OUT_PORT_OUT_DATA, packet);
         }
     }
 }
 
-void HRC_ARPTable::handleLSA(Packet *packet) {
+void HRC_ARPTable::handleInPacket(Packet *packet) {
+    // if is lsa, update table with na in packet, ether and ip in anno. discard directly
+    // else, check if it is from neighbor, if so, annotate srcNa, to OUT_PORT_IN_PACKET
+    //             else to OUT_PORT_DISCARD
+
     _lock.acquire_write();
 
     _lock.release_write();

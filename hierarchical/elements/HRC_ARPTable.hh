@@ -38,19 +38,18 @@ private:
 
 class HRC_ARPTable : public Element {
 public:
-    static const int IN_PORT_DATA = 0;
-    static const int IN_PORT_LSA = 1;
-    static const int OUT_PORT_DATA = 0;
-    static const int OUT_PORT_DISCARD = 1;
+    static const int IN_PORT_OUT_DATA = 0;
+    static const int IN_PORT_IN_PACKET = 1;
+    static const int OUT_PORT_OUT_DATA = 0;
+    static const int OUT_PORT_IN_PACKET = 1;
+    static const int OUT_PORT_DISCARD = 2;
 
     static int
     parseArgFile(const String &fileName, ErrorHandler *errh, std::unordered_map<hrc_na_t, HRC_NAAddress> &naAddresses);
 
     HRC_ARPTable() CLICK_COLD;
 
-    ~HRC_ARPTable() override
-
-    CLICK_COLD;
+    ~HRC_ARPTable() override CLICK_COLD;
 
     const char *class_name() const override { return "HRC_ARPTable"; };
 
@@ -58,9 +57,7 @@ public:
 
     const char *processing() const override { return PUSH; };
 
-    int configure(Vector<String> &conf, ErrorHandler *errh) override
-
-    CLICK_COLD;
+    int configure(Vector<String> &conf, ErrorHandler *errh) override CLICK_COLD;
 
     void push(int port, Packet *p) override;
 
@@ -69,9 +66,9 @@ private:
     std::unordered_map<hrc_na_t, HRC_NAAddress> _naAddresses;
     HRC_ReadWriteLock _lock;
 
-    void handleData(Packet *p);
+    void handleOutData(Packet *p);
 
-    void handleLSA(Packet *p);
+    void handleInPacket(Packet *p);
 };
 
 CLICK_ENDDECLS
