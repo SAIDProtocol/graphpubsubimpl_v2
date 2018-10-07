@@ -143,9 +143,14 @@ int HRC_FIB::configure(Vector<String> &conf, ErrorHandler *errh) {
     return 0;
 }
 
-void HRC_FIB::forwardBasedOnName(Packet *packet, const char *name) {
+inline void HRC_FIB::forwardBasedOnName(Packet *packet, const char *name, bool usingAnno = false) {
     _lock.acquire_read();
     auto na = _interestTable.longestPrefixMatch(name);
+    if (unlikely(usingAnno)) { // prioritize unicast over subscription
+        delete[] name;
+        *HRC_ANNO_DST_NAME(packet) = nullptr;
+    }
+
     if (na) {
         hrc_na_set_val(HRC_ANNO_NEXT_HOP_NA(packet), na);
         int outPort = (*na == _myNa) ? OUT_PORT_TO_LOCAL : OUT_PORT_TO_OTHER_ROUTER;
@@ -165,7 +170,7 @@ void HRC_FIB::handleInterest(Packet *packet) {
                        HRC_PACKET_TYPE_INTEREST);
         packet->kill();
     } else
-        forwardBasedOnName(packet, hrc_packet_interest_get_name(header));
+        forwardBasedOnName(packet, hrc_packet_interest_get_name(header), false);
 }
 
 void HRC_FIB::handleSubscription(Packet *packet) {
@@ -176,7 +181,7 @@ void HRC_FIB::handleSubscription(Packet *packet) {
                        HRC_PACKET_TYPE_SUBSCRIPTION);
         packet->kill();
     } else {
-        forwardBasedOnName(packet, *HRC_ANNO_DST_NAME(packet));
+        forwardBasedOnName(packet, *HRC_ANNO_DST_NAME(packet), true);
     }
 }
 

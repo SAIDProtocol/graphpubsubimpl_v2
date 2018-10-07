@@ -28,6 +28,7 @@ Packet *HRC_TEST_PrintPacket::simple_action(Packet *p) {
                 hrc_packet_publication_print(p->data(), _label, p->length(), _limit, p->headroom(), p->tailroom());
                 break;
             case HRC_PACKET_TYPE_SUBSCRIPTION:
+                hrc_packet_subscription_print(p->data(), _label, p->length(), p->headroom(), p->tailroom());
                 break;
             default:
                 click_chatter("Unknown packet type: 0x%02x", type);

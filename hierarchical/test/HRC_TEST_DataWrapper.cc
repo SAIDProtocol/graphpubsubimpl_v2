@@ -15,6 +15,8 @@ static size_t getPacketHeaderSize(uint8_t type, const char *name) {
             return hrc_packet_interest_calculate_header_size(name);
         case HRC_PACKET_TYPE_PUBLICATION:
             return hrc_packet_publication_calculate_header_size(name);
+        case HRC_PACKET_TYPE_SUBSCRIPTION:
+            return hrc_packet_subscription_calculate_header_size(name);
         default:
             return 0;
     }
@@ -36,6 +38,10 @@ Packet *HRC_TEST_DataWrapper::simple_action(Packet *p) {
             break;
         case HRC_PACKET_TYPE_PUBLICATION:
             hrc_packet_publication_init(header, _name.c_str(), payloadSize);
+            break;
+        case HRC_PACKET_TYPE_SUBSCRIPTION:
+            wp->take(payloadSize);
+            hrc_packet_subscription_init(header, _name.c_str(), payloadSize >= 2);
             break;
         default:
             ErrorHandler::default_handler()->fatal("Should not reach here! Unknown packet type 0x%02x", _type);
@@ -60,7 +66,7 @@ int HRC_TEST_DataWrapper::configure(Vector<String> &conf, ErrorHandler *errh) {
 
 void HRC_TEST_DataWrapper::setName(const String &name, ErrorHandler *errh) {
     _name = name;
-    _headerSize = getPacketHeaderSize(_type,_name.c_str());
+    _headerSize = getPacketHeaderSize(_type, _name.c_str());
     errh->debug(R"(name="%s", headerSize=%d)", _name.c_str(), _headerSize);
 }
 
@@ -73,11 +79,14 @@ void HRC_TEST_DataWrapper::setType(const String &type, ErrorHandler *errh) {
     } else if (_strType == "PUBLICATION" || _strType == "0X83" || _strType == "131") {
         _type = HRC_PACKET_TYPE_PUBLICATION;
         errh->debug("Setting as PUBLICATION (0x83)");
+    } else if (_strType == "SUBSCRIPTION" || _strType == "0X84" || _strType == "132") {
+        _type = HRC_PACKET_TYPE_SUBSCRIPTION;
+        errh->debug("Setting as SUBSCRIPTION (0x84)");
     } else {
         _type = HRC_PACKET_TYPE_INTEREST;
         errh->debug("Incorrect packet type %s, setting as INTEREST (0x81)", _strType.c_str());
     }
-    _headerSize = getPacketHeaderSize(_type,_name.c_str());
+    _headerSize = getPacketHeaderSize(_type, _name.c_str());
     _strType = type;
 }
 

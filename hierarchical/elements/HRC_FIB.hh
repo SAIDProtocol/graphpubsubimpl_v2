@@ -47,7 +47,7 @@ private:
     hrc_na_t _myNa;
     HRC_ReadWriteLock _lock;
 
-    void forwardBasedOnName(Packet *packet, const char *name);
+    inline void forwardBasedOnName(Packet *packet, const char *name, bool usingAnno);
 
     void handleInterest(Packet *packet);
     void handleSubscription(Packet *packet);
