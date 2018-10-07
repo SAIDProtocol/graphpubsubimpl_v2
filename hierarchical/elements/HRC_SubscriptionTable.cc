@@ -4,6 +4,8 @@
 
 #include "HRC_SubscriptionTable.hh"
 #include "HRC_Helper.hh"
+#include "HRC_PacketAnno.hh"
+#include "HRC_PacketHeader.hh"
 #include <click/args.hh>
 #include <click/error.hh>
 #include <click/straccum.hh>
@@ -129,7 +131,7 @@ int HRC_SubscriptionTable::configure(Vector<String> &conf, ErrorHandler *errh) {
 }
 
 void HRC_SubscriptionTable::push(int port, Packet *p) {
-    switch(port) {
+    switch (port) {
         case IN_PORT_PUBLICATION:
             handlePublication(p);
             break;
@@ -145,7 +147,33 @@ void HRC_SubscriptionTable::push(int port, Packet *p) {
 }
 
 void HRC_SubscriptionTable::handlePublication(Packet *packet) {
-    packet->kill();
+    auto header = packet->data();
+    auto type = hrc_packet_get_type(header);
+
+    if (unlikely(type != HRC_PACKET_TYPE_PUBLICATION)) {
+        ErrorHandler::default_handler()->debug(
+                "[HRC_SubscriptionTable::handlePublication] Error packet type (%02x). Should be publication (%02x)",
+                type, HRC_PACKET_TYPE_PUBLICATION);
+        packet->kill();
+    } else {
+        auto name = hrc_packet_publication_get_name(header);
+        _lock.acquire_read();
+        auto res = _table.lookup(name);
+        _lock.release_read();
+        // remove prev hop
+        res.erase(*HRC_ANNO_PREV_HOP_NA(packet));
+        if (res.empty()) {
+            checked_output_push(OUT_PORT_DISCARD, packet);
+        } else {
+            for (auto &next : res) {
+                auto wp = packet->clone();
+                hrc_na_set_val(HRC_ANNO_NEXT_HOP_NA(wp), &next);
+                checked_output_push(OUT_PORT_PUBLICATION, wp);
+            }
+            packet->kill();
+        }
+    }
+
 }
 
 void HRC_SubscriptionTable::handleSubscription(Packet *packet) {
