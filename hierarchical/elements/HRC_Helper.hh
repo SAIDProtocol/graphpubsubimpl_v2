@@ -6,12 +6,16 @@
 #define CLICK_HRC_HELPER_HH
 
 #include <click/config.h>
+#include <click/error.hh>
 #include <click/glue.hh>
+#include <click/string.hh>
 #include <cstdint>
 #include <cstring>
 #include <ctime>
 #include <sys/types.h>
 #include <sys/time.h>
+#include "HRC_InterestTable.hh"
+
 
 CLICK_DECLS
 
@@ -55,6 +59,98 @@ static inline void printTime() {
 
 static inline void copyEther(uint8_t *target, const uint8_t *src) {
     memcpy(target, src, 6);
+}
+
+
+static inline int parseGNRSFile(String &fileName, ErrorHandler *errh, HRC_InterestTable<const char *> &table) {
+    auto fp = fopen(fileName.c_str(), "r");
+    if (fp == nullptr) {
+        errh->error("Cannot read file %s", fileName.c_str());
+        return -1;
+    }
+
+    char *line = nullptr, *tmp;
+    size_t len = 0, lineNum = 0;
+    ssize_t pos;
+
+    char *cd, *rp;
+
+    while (getline(&line, &len, fp) != -1) {
+        lineNum++;
+#ifdef HRC_PARSEGNRSFILE_DEBUG
+        errh->debug(">>>>>>>>>>line: %d<<<<<<<<<<", lineNum);
+        errh->debug(R"(line: (%p) "%s")", line, line);
+#endif
+        tmp = line;
+        pos = skipEmpty(tmp);
+        //empty line
+        if (pos == -1) continue;
+
+        tmp += pos;
+#ifdef HRC_PARSEGNRSFILE_DEBUG
+        errh->debug(R"(skip empty pos: %d, line: "%s")", pos, tmp);
+#endif
+        // comment skip
+        if (*tmp == '#') continue;
+
+        // cd
+        pos = getPart(tmp);
+#ifdef HRC_PARSEGNRSFILE_DEBUG
+        errh->debug(R"(get part pos: %d, line: "%s")", pos, tmp);
+#endif
+        cd = tmp;
+#ifdef HRC_PARSEGNRSFILE_DEBUG
+        errh->debug(R"(cd (%p): "%s")", cd, cd);
+#endif
+        tmp += pos;
+
+        // rp
+#ifdef HRC_PARSEGNRSFILE_DEBUG
+        errh->debug(R"(line: "%s")", tmp);
+#endif
+        pos = skipEmpty(tmp);
+#ifdef HRC_PARSEGNRSFILE_DEBUG
+        errh->debug(R"(skip empty pos: %d, line: "%s")", pos, tmp);
+#endif
+        if (pos == -1) {
+            errh->error("Skip line %d: cannot find rp.", lineNum);
+            continue;
+        }
+        tmp += pos;
+        pos = getPart(tmp);
+#ifdef HRC_PARSEGNRSFILE_DEBUG
+        errh->debug(R"(get part pos: %d, line: (%p) "%s")", pos, tmp, tmp);
+#endif
+        if (pos == -1) pos = strlen(tmp) + 1;
+        rp = new char[pos];
+        memcpy(rp, tmp, static_cast<size_t>(pos));
+#ifdef HRC_PARSEGNRSFILE_DEBUG
+        errh->debug(R"(rp: (%p) "%s")", rp, rp);
+#endif
+        tmp += pos;
+        (void) tmp;
+
+#ifdef HRC_PARSEGNRSFILE_DEBUG
+        errh->debug(R"(Entry: (%p) "%s" -> "%s")", cd, cd, rp);
+#endif
+        auto exist = table.exactMatch(cd);
+        if (exist) {
+#ifdef HRC_PARSEGNRSFILE_DEBUG
+            errh->debug("exist=%p, *exist=%p, delete", exist, *exist);
+#endif
+            delete[] *exist;
+        } else {
+#ifdef HRC_PARSEGNRSFILE_DEBUG
+            errh->debug("not exist");
+#endif
+        }
+        table.set(cd, rp);
+    }
+    fclose(fp);
+    if (line) free(line);
+
+
+    return 0;
 }
 
 

@@ -83,9 +83,10 @@ hrc_packet_interest_print(const void *pkt, const String &label, uint32_t packetS
     auto size = hrc_packet_interest_get_size(pkt);
     auto headerSize = hrc_packet_interest_calculate_header_size(name);
     auto payloadSize = packetSize - headerSize;
-    auto payload = reinterpret_cast<const char *>(pkt) + headerSize;
-    for (decltype(size) i = 0; i < payloadSize && i < size && i < printLimit; ++i)
+    auto payload = reinterpret_cast<const unsigned char *>(pkt) + headerSize;
+    for (decltype(size) i = 0; i < payloadSize && i < size && i < printLimit; ++i) {
         snprintf(tmpPayloadBuf + i * 2, 3, "%02x", payload[i]);
+    }
 
     click_chatter("%s: INTEREST name=%s | size=%d | payload=%d | content(lim %d)=%s | [h:%d,t:%d]", label.c_str(), name,
                   size,
@@ -136,7 +137,7 @@ hrc_packet_publication_print(const void *pkt, const String &label, uint32_t pack
     auto size = hrc_packet_publication_get_size(pkt);
     auto headerSize = hrc_packet_publication_calculate_header_size(name);
     auto payloadSize = packetSize - headerSize;
-    auto payload = reinterpret_cast<const char *>(pkt) + headerSize;
+    auto payload = reinterpret_cast<const unsigned char *>(pkt) + headerSize;
     for (decltype(size) i = 0; i < payloadSize && i < size && i < printLimit; ++i)
         snprintf(tmpPayloadBuf + i * 2, 3, "%02x", payload[i]);
 

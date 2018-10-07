@@ -45,17 +45,16 @@ Packet *HRC_TEST_DataWrapper::simple_action(Packet *p) {
 }
 
 int HRC_TEST_DataWrapper::configure(Vector<String> &conf, ErrorHandler *errh) {
-    String type, name, test;
+    String type, name;
     if (Args(conf, this, errh)
                 .read_mp("TYPE", type)
                 .read_mp("NAME", name)
                 .complete() < 0) {
         return -1;
     }
-    click_chatter(test.c_str());
-    click_chatter(name.c_str());
     setType(type, errh);
     setName(name, errh);
+    errh->debug("type=%02x | name=%s | headerSize=%d", _type, _name.c_str(), _headerSize);
     return 0;
 }
 
