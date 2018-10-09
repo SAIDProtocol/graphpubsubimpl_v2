@@ -28,40 +28,40 @@ FromDevice($dev1, PROMISC false, SNIFFER true)
     -> classifier1::Classifier(12/27c1, -)
     -> HRC_EtherAnnotator(PORT 1)
     -> Strip(14)
-    -> HRC_TEST_PrintPacket(LABEL "dev1.data")
-    -> HRC_TEST_PrintAnno(LABEL "dev1.anno")
+//    -> HRC_TEST_PrintPacket(LABEL "dev1.data")
+//    -> HRC_TEST_PrintAnno(LABEL "dev1.anno")
     -> inQueue;
 
 FromDevice($dev2, PROMISC false, SNIFFER true)
     -> classifier2::Classifier(12/27c1, -)
     -> HRC_EtherAnnotator(PORT 2)
     -> Strip(14)
-    -> HRC_TEST_PrintPacket(LABEL "dev2.data")
-    -> HRC_TEST_PrintAnno(LABEL "dev2.anno")
+//    -> HRC_TEST_PrintPacket(LABEL "dev2.data")
+//    -> HRC_TEST_PrintAnno(LABEL "dev2.anno")
     -> inQueue;
 
 FromDevice($dev3, PROMISC false, SNIFFER true)
     -> classifier3::Classifier(12/27c1, -)
     -> HRC_EtherAnnotator(PORT 3)
     -> Strip(14)
-    -> HRC_TEST_PrintPacket(LABEL "dev3.data")
-    -> HRC_TEST_PrintAnno(LABEL "dev3.anno")
+//    -> HRC_TEST_PrintPacket(LABEL "dev3.data")
+//    -> HRC_TEST_PrintAnno(LABEL "dev3.anno")
     -> inQueue;
 
 inQueue
     -> inUnqueue::Unqueue
     -> HRC_PrioAnnotator
-    -> HRC_TEST_PrintAnno(LABEL "PrioAnnotator[0]")
+//    -> HRC_TEST_PrintAnno(LABEL "PrioAnnotator[0]")
     -> [1]arpTable[1]
-    -> HRC_TEST_PrintAnno(LABEL "arpTable[1]")
+//    -> HRC_TEST_PrintAnno(LABEL "arpTable[1]")
     -> inClassifier::Classifier(00/81, 00/82, 00/83, 00/84, -);
 
 inClassifier[0] // Interest
-    -> HRC_TEST_PrintPacket(LABEL "INTEREST")
-    -> HRC_TEST_PrintAnno(LABEL "INTEREST")
+//    -> HRC_TEST_PrintPacket(LABEL "INTEREST")
+//    -> HRC_TEST_PrintAnno(LABEL "INTEREST")
     -> [0]fib[0]
-    -> HRC_TEST_PrintPacket(LABEL "fib[0]")
-    -> HRC_TEST_PrintAnno(LABEL "fib[0]")
+//    -> HRC_TEST_PrintPacket(LABEL "fib[0]")
+//    -> HRC_TEST_PrintAnno(LABEL "fib[0]")
     -> arpQueue;
 
 inClassifier[1] // Data
@@ -70,30 +70,30 @@ inClassifier[1] // Data
     -> Discard;
 
 inClassifier[2] // Publication
-    -> HRC_TEST_PrintPacket(LABEL "PUBLICATION")
-    -> HRC_TEST_PrintAnno(LABEL "PUBLICATION")
+//    -> HRC_TEST_PrintPacket(LABEL "PUBLICATION")
+//    -> HRC_TEST_PrintAnno(LABEL "PUBLICATION")
     -> [0]subTable[0]
-    -> HRC_TEST_PrintPacket(LABEL "subTable[0]")
-    -> HRC_TEST_PrintAnno(LABEL "subTable[0]")
+//    -> HRC_TEST_PrintPacket(LABEL "subTable[0]")
+//    -> HRC_TEST_PrintAnno(LABEL "subTable[0]")
     -> arpQueue;
 
 inClassifier[3] // Subscription
-    -> HRC_TEST_PrintPacket(LABEL "SUBSCRIPTION")
-    -> HRC_TEST_PrintAnno(LABEL "SUBSCRIPTION")
+//    -> HRC_TEST_PrintPacket(LABEL "SUBSCRIPTION")
+//    -> HRC_TEST_PrintAnno(LABEL "SUBSCRIPTION")
     -> [1]subTable[1]
-    -> HRC_TEST_PrintPacket(LABEL "subTable[1]")
-    -> HRC_TEST_PrintAnno(LABEL "subTable[1]")
+//    -> HRC_TEST_PrintPacket(LABEL "subTable[1]")
+//    -> HRC_TEST_PrintAnno(LABEL "subTable[1]")
     -> gnrsCache
-    -> HRC_TEST_PrintPacket(LABEL "gnrsCache[0]")
-    -> HRC_TEST_PrintAnno(LABEL "gnrsCache[0]")
+//    -> HRC_TEST_PrintPacket(LABEL "gnrsCache[0]")
+//    -> HRC_TEST_PrintAnno(LABEL "gnrsCache[0]")
     -> [1]fib;
 
 
 arpQueue
     -> arpUnqueue::Unqueue
     -> arpTable
-    -> HRC_TEST_PrintPacket(LABEL "arpTable[0]")
-    -> HRC_TEST_PrintAnno(LABEL "arpTable[0]")
+//    -> HRC_TEST_PrintPacket(LABEL "arpTable[0]")
+//    -> HRC_TEST_PrintAnno(LABEL "arpTable[0]")
     -> portSwitch;
 
 portSwitch[1] -> outQueue1;
@@ -102,17 +102,17 @@ portSwitch[3] -> outQueue3;
 
 outQueue1
     -> outEncap1
-    -> Print("outEncap1", 100)
+//    -> Print("outEncap1", 100)
     -> toDev1::ToDevice($dev1);
 
 outQueue2
     -> outEncap2
-    -> Print("outEncap2", 100)
+//    -> Print("outEncap2", 100)
     -> toDev2::ToDevice($dev2);
 
 outQueue3
     -> outEncap3
-    -> Print("outEncap3", 100)
+//    -> Print("outEncap3", 100)
     -> toDev3::ToDevice($dev3);
 
 fib[1]

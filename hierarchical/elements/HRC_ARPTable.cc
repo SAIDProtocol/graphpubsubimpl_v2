@@ -254,7 +254,7 @@ void HRC_ARPTable::handleInPacket(Packet *packet) {
         auto port = HRC_ANNO_PREV_HOP_PORT(packet);
         // else, check if it is from neighbor, if so, annotate srcNa, to OUT_PORT_IN_PACKET
         //             else to OUT_PORT_DISCARD
-        click_chatter("eth=%s, ip=%s, port=%d", ether->unparse_colon().c_str(), ip->unparse().c_str(), *port);
+        //click_chatter("eth=%s, ip=%s, port=%d", ether->unparse_colon().c_str(), ip->unparse().c_str(), *port);
         auto it = _inverseNaAddresses.find(HRC_NAAddress(*port, *ether, *ip));
         if (it == _inverseNaAddresses.end()) {
             click_chatter("Cannot find neighbor NA with port=%d, ether=%s, ip=%s, discard...", *port, ether->unparse_colon().c_str(), ip->unparse().c_str());
