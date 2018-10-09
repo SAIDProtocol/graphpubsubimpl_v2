@@ -1,0 +1,5 @@
+/sports    0x2001
+/sports/football    0x2002
+/sports/football/match    0x2004
+/sports/football/player    0x2001
+/sports/basketball    0x2003

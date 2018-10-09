@@ -1,0 +1,8 @@
+/sports    0x11
+/sports/football    0x12
+/sports/football    0x13
+/sports/football/match    0x14
+/sports/football/player    0x15
+/sports/football/player    0x11
+/sports/basketball    0x16
+/sports/basketball    0x12

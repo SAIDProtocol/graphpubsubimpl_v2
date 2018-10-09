@@ -177,7 +177,18 @@ void HRC_SubscriptionTable::handlePublication(Packet *packet) {
 }
 
 void HRC_SubscriptionTable::handleSubscription(Packet *packet) {
-    packet->kill();
+    auto header = packet->data();
+    auto type = hrc_packet_get_type(header);
+
+    if (unlikely(type != HRC_PACKET_TYPE_SUBSCRIPTION)) {
+        ErrorHandler::default_handler()->debug(
+                "[HRC_SubscriptionTable::handleSubscription] Error packet type (%02x). Should be subscription (%02x)",
+                type, HRC_PACKET_TYPE_SUBSCRIPTION);
+        packet->kill();
+    } else {
+        ErrorHandler::default_handler()->debug("Processing of subscription");
+        packet->kill();
+    }
 }
 
 CLICK_ENDDECLS
