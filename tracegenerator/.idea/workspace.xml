@@ -11,10 +11,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="33cd502a-4902-4c72-94e7-e12ff6778a72" name="Default Changelist" comment="">
+    <list default="true" id="33cd502a-4902-4c72-94e7-e12ff6778a72" name="Default Changelist" comment="Added files">
       <change beforePath="$PROJECT_DIR$/../hierarchical/bench/ben-client-1-10000.fib" beforeDir="false" afterPath="$PROJECT_DIR$/../hierarchical/bench/ben-client-1-10000.fib" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hierarchical/bench/ben-client-1-10000.gnrs" beforeDir="false" afterPath="$PROJECT_DIR$/../hierarchical/bench/ben-client-1-10000.gnrs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../hierarchical/bench/ben-router-10000.fib" beforeDir="false" afterPath="$PROJECT_DIR$/../hierarchical/bench/ben-router-10000.fib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,13 +37,15 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="2230" />
+          <entry key="cpp" value="2237" />
           <entry key="h" value="1" />
+          <entry key="txt" value="13" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="ObjectiveC" value="2231" />
+          <entry key="ObjectiveC" value="2238" />
+          <entry key="PLAIN_TEXT" value="13" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -70,8 +74,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="22" column="15" selection-start-line="22" selection-start-column="15" selection-end-line="22" selection-end-column="15" />
+            <state relative-caret-position="445">
+              <caret line="69" column="42" selection-start-line="69" selection-start-column="42" selection-end-line="69" selection-end-column="42" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#257#269#0" expanded="true" />
@@ -176,23 +180,23 @@
       <option name="presentableId" value="Default" />
       <updated>1539209179967</updated>
       <workItem from="1539209181870" duration="1879000" />
-      <workItem from="1539260746677" duration="4086000" />
+      <workItem from="1539260746677" duration="4804000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5965000" />
+    <option name="totallyTimeSpent" value="6683000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1200" y="874" width="1920" height="1017" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25239617" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25239617" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.329718" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.329718" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -235,8 +239,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="22" column="15" selection-start-line="22" selection-start-column="15" selection-end-line="22" selection-end-column="15" />
+        <state relative-caret-position="445">
+          <caret line="69" column="42" selection-start-line="69" selection-start-column="42" selection-end-line="69" selection-end-column="42" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#257#269#0" expanded="true" />

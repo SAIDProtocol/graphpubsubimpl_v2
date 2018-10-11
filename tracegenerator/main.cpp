@@ -60,9 +60,13 @@ void outputGNRS(const vector<string> &names, const string &fileName) {
 int main() {
     default_random_engine rand(0);
     vector<string> names;
-    generateNamespace(0, 8, 2, 2, 8, 4, "/", names, rand);
-    outputFib(names, "ben-client-1-B512.fib", 0x10, 0x10, rand);
-    outputFib(names, "ben-router-B512.fib", 0x11, 0x16, rand);
-    outputGNRS(names, "ben-client-1-B512.gnrs");
+//    generateNamespace(0, 8, 2, 2, 8, 4, "/", names, rand);
+//    outputFib(names, "ben-client-1-B512.fib", 0x10, 0x10, rand);
+//    outputFib(names, "ben-router-B512.fib", 0x11, 0x16, rand);
+//    outputGNRS(names, "ben-client-1-B512.gnrs");
+    generateNamespace(0, 13, 2, 2, 8, 4, "/", names, rand);
+    outputFib(names, "ben-client-1-B16383.fib", 0x10, 0x10, rand);
+    outputFib(names, "ben-router-B16383.fib", 0x11, 0x16, rand);
+    outputGNRS(names, "ben-client-1-B16383.gnrs");
     return 0;
 }
