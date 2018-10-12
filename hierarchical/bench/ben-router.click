@@ -150,7 +150,8 @@ gnrsCache[1]            // Cannot find gnrs entry
     -> Discard;
 
 subTable[2]             // Cannot find subscribers
-    -> Print("subTable[1]", 100)
+    -> HRC_TEST_PrintPacket(LABEL "subTable[2]")
+    -> HRC_TEST_PrintAnno(LABEL "subTable[2]")
     -> Discard;
 
 fib[2]                  // Cannot find next hop
