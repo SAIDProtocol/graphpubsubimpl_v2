@@ -40,6 +40,21 @@ void generateNamespace(
     }
 }
 
+void generateNamespaceLeaf(
+        int currLevel, int maxLevel, size_t minChildCount, size_t maxChildCount, size_t minLen, size_t maxLen,
+        const string &prefix, vector<string> &res, default_random_engine &rand) {
+    if (currLevel < maxLevel) {
+        size_t childrenSize = randBetween(minChildCount, maxChildCount, rand);
+        for (int i = 0; i < childrenSize; i++) {
+            string childName = prefix + getRandomString(minLen, maxLen, rand) + '/';
+            generateNamespaceLeaf(currLevel + 1, maxLevel, minChildCount, maxChildCount, minLen, maxLen,
+                              childName, res, rand);
+        }
+    } else {
+        res.push_back(prefix);
+    }
+}
+
 void outputFib(const vector<string> &names, const string &fileName, int nextHopMin, int nextHopMax,
                default_random_engine &rand) {
     ofstream os(fileName);
@@ -68,9 +83,15 @@ int main() {
 //    outputFib(names, "ben-client-1-B16383.fib", 0x10, 0x10, rand);
 //    outputFib(names, "ben-router-B16383.fib", 0x11, 0x16, rand);
 //    outputGNRS(names, "ben-client-1-B16383.gnrs");
-    generateNamespace(0, 13, 2, 2, 15, 25, "/", names, rand);
-    outputFib(names, "ben-client-1-BL16383.fib", 0x10, 0x10, rand);
-    outputFib(names, "ben-router-BL16383.fib", 0x11, 0x16, rand);
-    outputGNRS(names, "ben-client-1-BL16383.gnrs");
+//    generateNamespace(0, 13, 2, 2, 15, 25, "/", names, rand);
+//    outputFib(names, "ben-client-1-BL16383.fib", 0x10, 0x10, rand);
+//    outputFib(names, "ben-router-BL16383.fib", 0x11, 0x16, rand);
+//    outputGNRS(names, "ben-client-1-BL16383.gnrs");
+
+//    generateNamespaceLeaf(0, 13, 2, 2, 4, 8, "/", names, rand);
+//    outputFib(names, "ben-router-B16383.sub", 0x11, 0x16, rand);
+//    generateNamespaceLeaf(0, 13, 2, 2, 4, 8, "/", names, rand);
+//    outputFib(names, "ben-client-1-B16383.sub", 0x10, 0x10, rand);
+
     return 0;
 }

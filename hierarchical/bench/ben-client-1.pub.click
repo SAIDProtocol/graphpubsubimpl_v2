@@ -1,42 +1,36 @@
-// $fibFile
+// $subFile
 // $arpFile
-// $gnrsFile
-// $ether $dev
+// $gap
 // $lim
-// $name
-// $na
+// $name $isFile
+// $ether
+// $dev
 require(package hierarchical)
 
-fib::HRC_FIB(FILENAME $fibFile, NA $na);
+subTable::HRC_SubscriptionTable(FILENAME $subFile);
 arpTable::HRC_ARPTable(FILENAME $arpFile);
 outSwitch::HRC_PortSwitch;
 outEncap1::HRC_EtherEncap(MY_ETHER $ether);
-pubEncap::HRC_PublicationEncapsulator(FILENAME $gnrsFile);
 
 outQueue1::ThreadSafeQueue(65536);
 
-TimedSource($gap, "bbbbbbbbbbbbbbbbbbbbbb", LIMIT $lim, HEADROOM 70, STOP true)
-	-> HRC_TEST_DataWrapper(PUBLICATION, $name, $isFile)
+TimedSource($gap, "bbbbbbbbbbbbbbbbbbbcbb", LIMIT $lim, HEADROOM 200, STOP true)
+   	-> HRC_TEST_DataWrapper(PUBLICATION, $name, $isFile)
 	-> HRC_TEST_PrintPacket("pubWrapper[0].data")
-	-> pubEncap
-	-> HRC_TEST_PrintPacket("pubEncap[0].data")
 	-> HRC_PrioAnnotator
 	-> HRC_TEST_PrintAnno("prioAnno[0].anno")
-	-> fib
-	-> HRC_TEST_PrintPacket("fib[0].data")
-	-> HRC_TEST_PrintAnno("fib[0].anno")
+	-> HRC_TEST_PrintAnno("prioAnno[0].anno")
+	-> subTable
+	-> HRC_TEST_PrintAnno("subTable[0].anno")
+	-> HRC_TEST_PrintAnno("subTable[0].anno")
 	-> arpTable
-	-> HRC_TEST_PrintPacket("arp[0].data")
-	-> HRC_TEST_PrintAnno("arp[0].anno")
+	-> HRC_TEST_PrintAnno("arpTable[0].anno")
+	-> HRC_TEST_PrintAnno("arpTable[0].anno")
 	-> outSwitch[1]
 	-> outQueue1
 	-> outEncap1
 	-> Print(outEncap1[0], 100)
-	-> ToDevice($dev);
-
-pubEncap[1]		// do not know which name to encap
-	-> Print(pubEncap[1], 100)
-	-> Discard;
+    -> ToDevice($dev);
 
 arpTable[1]		// should not reach
 	-> Print(arpTable[1], 100)
@@ -44,14 +38,6 @@ arpTable[1]		// should not reach
 
 arpTable[2]		// cannot find neighbor
 	-> Print(arpTable[2], 100)
-	-> Discard;
-
-fib[1]			// to local, discard
-	-> Print(fib[1], 100)
-	-> Discard;
-
-fib[2]			// cannot find destination
-	-> Print(fib[2], 100)
 	-> Discard;
 
 outSwitch[0]		// cannot find out port
