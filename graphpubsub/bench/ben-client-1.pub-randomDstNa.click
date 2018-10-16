@@ -11,7 +11,7 @@ outQueue1::ThreadSafeQueue(65536);
 
 
 
-TimedSource(1, "bbbbbbbbbbbbbbbbbbbbbb", LIMIT $lim, HEADROOM 70, STOP true)
+TimedSource($gap, "bbbbbbbbbbbbbbbbbbbbbb", LIMIT $lim, HEADROOM 70, STOP true)
 	-> GPS_TEST_PubWrapper(DST_GUID $guid, DST_NA_FILE $dstNaFile, SRC_NA $src)
 	-> GPS_TEST_PrintPacket(LABEL "pubWrapper[0].data")
 	-> routingQueue;

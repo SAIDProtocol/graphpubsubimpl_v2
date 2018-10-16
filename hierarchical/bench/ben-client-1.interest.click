@@ -15,7 +15,7 @@ pubEncap::HRC_PublicationEncapsulator(FILENAME $gnrsFile);
 
 outQueue1::ThreadSafeQueue(65536);
 
-TimedSource($gap, "bbbbbbbbbbbbbbbbbbbbbb", LIMIT $lim, HEADROOM 70, STOP true)
+TimedSource($gap, "bbbbbbbbbbbbbbbbbbbbbb", LIMIT $lim, HEADROOM 200, STOP true)
 	-> HRC_TEST_DataWrapper(PUBLICATION, $name, $isFile)
 	-> HRC_TEST_PrintPacket("pubWrapper[0].data")
 	-> pubEncap
