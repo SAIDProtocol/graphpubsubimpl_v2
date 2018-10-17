@@ -251,22 +251,30 @@ gps_packet_publication_init(void *pkt, const gps_guid_t *srcGuid, const gps_guid
     gps_packet_publication_set_size(pkt, size);
 }
 
-static inline void gps_packet_publication_print(const void *pkt, const String &label, uint32_t packetSize) {
-    const gps_guid_t *srcGuid = gps_packet_publication_get_srcGuid(pkt),
-            *dstGuid = gps_packet_publication_get_dstGuid(pkt);
-    const gps_na_t *srcNa = gps_packet_publication_get_srcNa(pkt),
-            *dstNa = gps_packet_publication_get_dstNa(pkt);
-    uint32_t size = gps_packet_publication_get_size(pkt),
-            payloadSize = packetSize - sizeof(gps_packet_publication_t);
+static inline void gps_packet_publication_print(const void *pkt, const String &label, uint32_t packetSize, uint32_t printLimit = 20) {
+    auto tmpPayloadBuf = new char[2 * printLimit + 1];
+    auto srcGuid = gps_packet_publication_get_srcGuid(pkt),
+            dstGuid = gps_packet_publication_get_dstGuid(pkt);
+    auto srcNa = gps_packet_publication_get_srcNa(pkt),
+            dstNa = gps_packet_publication_get_dstNa(pkt);
+    auto size = gps_packet_publication_get_size(pkt);
+    auto payloadSize = packetSize - sizeof(gps_packet_publication_t);
+    auto payload = reinterpret_cast<const unsigned char *>(pkt) + sizeof(gps_packet_publication_t);
+    for (decltype(size) i = 0; i < payloadSize && i < size && i < printLimit; ++i)
+        snprintf(tmpPayloadBuf + i * 2, 3, "%02x", payload[i]);
+
     click_chatter(
-            "%s: PUBLICATION srcGuid=%s | dstGuid=%s | srcNa=%s | dstNa=%s | size=%d | payload=%d",
+            "%s: PUBLICATION srcGuid=%s | dstGuid=%s | srcNa=%s | dstNa=%s | size=%d | payload=%d | content(lim %d)=%s",
             label.c_str(),
             gps_guid_unparse(srcGuid).c_str(),
             gps_guid_unparse(dstGuid).c_str(),
             gps_na_unparse(srcNa).c_str(),
             gps_na_unparse(dstNa).c_str(),
             size,
-            payloadSize);
+            payloadSize,
+            printLimit,
+            tmpPayloadBuf);
+    delete[] tmpPayloadBuf;
 }
 
 
@@ -637,7 +645,7 @@ static inline void gps_packet_gnrsAssociation_set_fromEndhost(void *pkt, bool fr
 
 static inline void
 gps_packet_gnrsAssociation_init(void *pkt, const gps_guid_t *srcGuid, const gps_na_t *srcNa,
-                             const gps_na_t *dstNa, bool fromEndHost) {
+                                const gps_na_t *dstNa, bool fromEndHost) {
     gps_packet_set_type(pkt, GPS_PACKET_TYPE_GNRS_ASSO);
     gps_packet_gnrsAssociation_set_srcGuid(pkt, srcGuid);
     gps_guid_clear(gps_packet_gnrsAssociation_get_dstGuid(pkt));

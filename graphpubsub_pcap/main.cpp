@@ -1,32 +1,21 @@
-#include <iostream>
-#include <pcap/pcap.h>
-#include <cerrno>
-#include <cstdlib>
+//#include <iostream>
+//#include <pcap/pcap.h>
+//#include <cerrno>
+//#include <cstdlib>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
 
-using namespace std;
+#include "pcap_help.hpp"
+#include <locale.h>
 
 int main() {
-
-    char errbuf[PCAP_ERRBUF_SIZE];
-    pcap_if_t *alldevsp;
-
-    int ret = pcap_findalldevs(&alldevsp, errbuf);
-    cout << "ret=" << ret << endl;
-
-    for (auto dev = alldevsp; dev != nullptr; dev = dev->next) {
-        cout << "name = " << dev->name << endl;
-        if (dev->description) cout << "  description = " << dev->description << endl;
-        cout << "  flags =";
-        if (dev->flags & PCAP_IF_LOOPBACK) cout << " PCAP_IF_LOOPBACK";
-        if (dev->flags & PCAP_IF_UP) cout << " PCAP_IF_UP";
-        if (dev->flags & PCAP_IF_RUNNING) cout << " PCAP_IF_RUNNING";
-        cout << endl;
-        cout << endl;
-    }
-
-    pcap_freealldevs(alldevsp);
-
-
+    setlocale(LC_NUMERIC, "");
+//    print_all_devices();
+//    print_dev_net("eno1");
+//    capture_one_packet("vlan259");
+//    capture_dev("vlan259", -1, "");
+    relay_dev("eno2", -1, "", "eno1");
     return 0;
 
 }
+

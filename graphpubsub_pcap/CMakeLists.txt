@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 11)
 
 link_libraries(pcap)
 
-add_executable(graphpubsub_pcap main.cpp)
+add_executable(graphpubsub_pcap main.cpp pcap_help.cpp pcap_help.hpp)
