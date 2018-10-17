@@ -81,12 +81,14 @@ Packet *GPS_TEST_PubGenerator::generateNaPacket() {
     auto wp = _packet->clone()->uniqueify();
     gps_na_set_val(gps_packet_publication_get_dstNa(wp->data()), &_dstNas[_rand() % _dstNas.size()]);
     return setCount(wp);
+//    return _packet->clone();
 }
 
 Packet *GPS_TEST_PubGenerator::generateGuidPacket() {
     auto wp = _packet->clone()->uniqueify();
     gps_guid_set_val(gps_packet_publication_get_dstGuid(wp->data()), &_dstGuids[_rand() % _dstGuids.size()]);
     return setCount(wp);
+//    return _packet->clone();
 }
 
 WritablePacket *GPS_TEST_PubGenerator::setCount(WritablePacket *wp) {
