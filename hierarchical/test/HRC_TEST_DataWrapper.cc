@@ -96,8 +96,7 @@ int HRC_TEST_DataWrapper::setName(const String &name, bool isFile, ErrorHandler 
 }
 
 void HRC_TEST_DataWrapper::setType(const String &type, ErrorHandler *errh) {
-    _strType = type;
-    _strType.upper();
+    _strType = type.upper();
     if (_strType == "INTEREST" || _strType == "0X81" || _strType == "129") {
         _type = HRC_PACKET_TYPE_INTEREST;
         errh->debug("Setting as INTEREST (0x81)");
@@ -109,7 +108,7 @@ void HRC_TEST_DataWrapper::setType(const String &type, ErrorHandler *errh) {
         errh->debug("Setting as SUBSCRIPTION (0x84)");
     } else {
         _type = HRC_PACKET_TYPE_INTEREST;
-        errh->debug("Incorrect packet type %s, setting as INTEREST (0x81)", _strType.c_str());
+        errh->debug("Incorrect packet type %s, setting as INTEREST (0x81)", type.c_str());
     }
     _headerSize = getPacketHeaderSize(_type, _name.c_str());
     _strType = type;

@@ -36,6 +36,7 @@ public:
 
     void setType(const String &type, ErrorHandler *errh);
 
+    static int parseFile(const String &name, std::vector<std::string> &names, ErrorHandler *errh);
 private:
     enum {
         h_name, h_type
@@ -47,7 +48,6 @@ private:
     std::vector<std::string> _names;
     std::default_random_engine _rand;
 
-    static int parseFile(const String &name, std::vector<std::string> &names, ErrorHandler *errh);
     static int change_param(const String &, Element *, void *, ErrorHandler *);
 };
 

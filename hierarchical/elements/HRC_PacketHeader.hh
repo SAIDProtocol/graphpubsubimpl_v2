@@ -59,12 +59,16 @@ static inline void hrc_packet_interest_set_size(void *pkt, uint32_t size) {
     reinterpret_cast<hrc_packet_interest_t *>(pkt)->size = htonl(size);
 }
 
+static inline size_t hrc_packet_interest_calculate_header_size(size_t nameSize) {
+    return sizeof(hrc_packet_interest_t) + nameSize + 1;
+}
+
 static inline size_t hrc_packet_interest_calculate_header_size(const char *name) {
-    return sizeof(hrc_packet_interest_t) + strlen(name) + 1;
+    return hrc_packet_interest_calculate_header_size(strlen(name));
 }
 
 static inline size_t hrc_packet_interest_get_header_size(const void *pkt) {
-    return sizeof(hrc_packet_interest_t) + strlen(hrc_packet_interest_get_name(pkt)) + 1;
+    return hrc_packet_interest_calculate_header_size(strlen(hrc_packet_interest_get_name(pkt)));
 }
 
 static inline void hrc_packet_interest_init(void *pkt, const char *name, uint32_t size) {
@@ -110,12 +114,16 @@ static inline void hrc_packet_publication_set_size(void *pkt, uint32_t size) {
     reinterpret_cast<hrc_packet_publication_t *>(pkt)->size = htonl(size);
 }
 
+static inline size_t hrc_packet_publication_calculate_header_size(size_t nameSize) {
+    return sizeof(hrc_packet_publication_t) + nameSize + 1;
+}
+
 static inline size_t hrc_packet_publication_calculate_header_size(const char *name) {
-    return sizeof(hrc_packet_publication_t) + strlen(name) + 1;
+    return hrc_packet_publication_calculate_header_size(strlen(name));
 }
 
 static inline size_t hrc_packet_publication_get_header_size(const void *pkt) {
-    return sizeof(hrc_packet_publication_t) + strlen(hrc_packet_publication_get_name(pkt)) + 1;
+    return hrc_packet_publication_calculate_header_size(strlen(hrc_packet_publication_get_name(pkt)));
 }
 
 static inline void hrc_packet_publication_init(void *pkt, const char *name, uint32_t size) {
@@ -159,12 +167,16 @@ static inline bool hrc_packet_subscription_is_sub(const void *pkt) {
     return static_cast<bool>(reinterpret_cast<const hrc_packet_subscription_t *>(pkt)->sub);
 }
 
+static inline size_t hrc_packet_subscription_calculate_header_size(size_t nameSize) {
+    return sizeof(hrc_packet_subscription_t) + nameSize + 1;
+}
+
 static inline size_t hrc_packet_subscription_calculate_header_size(const char *name) {
-    return sizeof(hrc_packet_subscription_t) + strlen(name) + 1;
+    return hrc_packet_subscription_calculate_header_size(strlen(name));
 }
 
 static inline size_t hrc_packet_subscription_get_header_size(const void *pkt) {
-    return sizeof(hrc_packet_subscription_t) + strlen(hrc_packet_subscription_get_name(pkt)) + 1;
+    return hrc_packet_subscription_calculate_header_size(strlen(hrc_packet_subscription_get_name(pkt)));
 }
 
 static inline void hrc_packet_subscription_set_sub(void *pkt, bool sub) {
