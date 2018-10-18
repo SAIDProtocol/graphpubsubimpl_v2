@@ -8,6 +8,7 @@
 #include <click/config.h>
 #include <click/element.hh>
 #include <click/glue.hh>
+#include <click/timer.hh>
 #include <vector>
 #include <random>
 #include "../elements/GPS_GUID.hh"
@@ -21,15 +22,19 @@ public:
 
     ~GPS_TEST_PubGenerator() override CLICK_COLD;
 
-    Packet *pull(int port) override;
-
     const char *class_name() const override { return "GPS_TEST_PubGenerator"; }
 
     const char *port_count() const override { return "0/1"; }
 
     const char *processing() const override { return PULL; }
 
+    int initialize(ErrorHandler *errh) override CLICK_COLD;
+
     int configure(Vector<String> &conf, ErrorHandler *errh) override CLICK_COLD;
+
+    void run_timer(Timer *timer) override;
+
+    Packet *pull(int port) override;
 
 private:
     std::vector<gps_guid_t> _dstGuids;
@@ -37,6 +42,8 @@ private:
     std::default_random_engine _rand;
     Packet *_packet;
     uint32_t _pktCnt;
+    Timer _timer;
+    Timestamp _duration;
 
     Packet *(GPS_TEST_PubGenerator::*_generatePacket)();
 

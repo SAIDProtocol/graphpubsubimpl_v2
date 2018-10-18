@@ -8,6 +8,7 @@
 #include "../elements/GPS_SubscriptionTable.hh"
 #include <click/args.hh>
 #include <click/error.hh>
+#include <click/router.hh>
 #include <ctime>
 
 CLICK_DECLS
@@ -17,12 +18,14 @@ GPS_TEST_PubGenerator::GPS_TEST_PubGenerator() :
         _rand(0),
         _packet(nullptr),
         _pktCnt(0),
+        _timer(this),
         _generatePacket(&GPS_TEST_PubGenerator::generateGuidPacket) {
 }
 
 GPS_TEST_PubGenerator::~GPS_TEST_PubGenerator() = default;
 
 int GPS_TEST_PubGenerator::configure(Vector<String> &conf, ErrorHandler *errh) {
+
     uint32_t numSrcNa, numSrcGuid;
     uint32_t payloadSize;
     String dstNaFile, dstGuidFile;
@@ -31,6 +34,7 @@ int GPS_TEST_PubGenerator::configure(Vector<String> &conf, ErrorHandler *errh) {
                 .read_mp("SRC_NA", numSrcNa)
                 .read_mp("SRC_GUID", numSrcGuid)
                 .read_mp("PAYLOAD_SIZE", payloadSize)
+                .read_p("DURATION", _duration)
                 .read("DST_NA_FILE", FilenameArg(), dstNaFile)
                 .read_status(hasDstNaFile)
                 .read("DST_GUID_FILE", FilenameArg(), dstGuidFile)
@@ -96,6 +100,19 @@ WritablePacket *GPS_TEST_PubGenerator::setCount(WritablePacket *wp) {
     wp->timestamp_anno().assign_now();
 //    ErrorHandler::default_handler()->debug("now: %s", wp->timestamp_anno().unparse().c_str());
     return wp;
+}
+
+void GPS_TEST_PubGenerator::run_timer(Timer *) {
+    router()->please_stop_driver();
+}
+
+int GPS_TEST_PubGenerator::initialize(ErrorHandler *errh) {
+    _timer.initialize(this);
+    if (_duration) {
+        errh->debug("Duration: %s", _duration.unparse().c_str());
+        _timer.schedule_after(_duration);
+    }
+    return 0;
 }
 
 CLICK_ENDDECLS
