@@ -1,4 +1,5 @@
-
+// $dev1 $dev1Mac $dev1DstMac
+// $dev2 $dev2Mac $dev2DstMac
 inQueue::ThreadSafeQueue(65536);
 outQueue1::ThreadSafeQueue(65536);
 outQueue2::ThreadSafeQueue(65536);
@@ -22,12 +23,12 @@ inQueue
 
 ps[1]
 	-> outQueue1
-	-> EtherEncap(0x27c0, 1:1:1:1:1:1, 2:2:2:2:2:2)
+	-> EtherEncap(0x27c0, $dev1Mac, $dev1DstMac)
 	-> ToDevice($dev1);
 
 ps[2]
 	-> outQueue2
-	-> EtherEncap(0x27c0, 1:1:1:1:1:1, 3:3:3:3:3:3)
+	-> EtherEncap(0x27c0, $dev2Mac, $dev2DstMac)
 	-> ToDevice($dev2);
 
 
