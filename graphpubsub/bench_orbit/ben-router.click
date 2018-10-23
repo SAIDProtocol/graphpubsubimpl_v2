@@ -24,7 +24,8 @@ outQueue2::ThreadSafeQueue(65536);
 
 
 FromDevice($dev1, PROMISC false, SNIFFER true)
-	-> classifier1::Classifier(12/27c0, -)
+	-> cntIn1::Counter
+	-> classifier1::Classifier(12/27c0)
 	-> GPS_EtherAnnotator(PORT 1)
 	-> Strip(14)
 //	-> GPS_TEST_PrintPacket(LABEL "dev1.data")
@@ -32,7 +33,8 @@ FromDevice($dev1, PROMISC false, SNIFFER true)
 	-> inQueue;
 
 FromDevice($dev2, PROMISC false, SNIFFER true)
-	-> classifier2::Classifier(12/27c0, -)
+	-> cntIn2::Counter
+	-> classifier2::Classifier(12/27c0)
 	-> GPS_EtherAnnotator(PORT 2)
 	-> Strip(14)
 //	-> GPS_TEST_PrintPacket(LABEL "dev2.data")
@@ -115,20 +117,16 @@ portSwitch[2] -> outQueue2;
 outQueue1
 	-> outEncap1
 //	-> Print("outEncap1", 100)
+	-> cntOut1::Counter
 	-> toDev1::ToDevice($dev1)
 
 outQueue2
 	-> outEncap2
 //	-> Print("outEncap2", 100)
+	-> cntOut2::Counter
 	-> toDev2::ToDevice($dev2)
 
-classifier1[1]		// Cannot understand ether type from dev 1
-//	-> Print("classifier1[1]", 100)
-	-> Discard;
-
-classifier2[1]		// Cannot understand ether type from dev 2
-//	-> Print("classifier2[1]", 100)
-	-> Discard;
+GPS_TEST_PrintCounter(ELEM cntIn1, ELEM cntIn2, ELEM cntOut1, ELEM cntOut2);
 
 inClassifier[6]		// Cannot understand GPS packet type
 	-> Print("inClassifier[6]", 100)

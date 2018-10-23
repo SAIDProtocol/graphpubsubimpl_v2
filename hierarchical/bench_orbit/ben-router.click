@@ -23,6 +23,7 @@ outQueue2::ThreadSafeQueue(65536);
 
 
 FromDevice($dev1, PROMISC false, SNIFFER true)
+    -> cntIn1::Counter
     -> classifier1::Classifier(12/27c1, -)
     -> HRC_EtherAnnotator(PORT 1)
     -> Strip(14)
@@ -31,6 +32,7 @@ FromDevice($dev1, PROMISC false, SNIFFER true)
     -> inQueue;
 
 FromDevice($dev2, PROMISC false, SNIFFER true)
+    -> cntIn2::Counter
     -> classifier2::Classifier(12/27c1, -)
     -> HRC_EtherAnnotator(PORT 2)
     -> Strip(14)
@@ -92,12 +94,16 @@ portSwitch[2] -> outQueue2;
 outQueue1
     -> outEncap1
 //    -> Print("outEncap1", 100)
+    -> cntOut1::Counter
     -> toDev1::ToDevice($dev1);
 
 outQueue2
     -> outEncap2
 //    -> Print("outEncap2", 100)
+    -> cntOut2::Counter
     -> toDev2::ToDevice($dev2);
+
+GPS_TEST_PrintCounter(ELEM cntIn1, ELEM cntIn2, ELEM cntOut1, ELEM cntOut2);
 
 fib[1]
     -> HRC_TEST_PrintPacket(LABEL "fib[1]")

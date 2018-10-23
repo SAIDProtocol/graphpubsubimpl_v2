@@ -19,7 +19,6 @@ int GPS_TEST_PrintCounter::configure(Vector<String> &conf, ErrorHandler *errh) {
                 .read_all("ELEM", ElementArg(), _elements)
                 .complete() < 0)
         return -1;
-
     errh->debug("count: %d", _elements.size());
     for (auto ptr : _elements)
         errh->debug("%s::%s", ptr->name().c_str(), ptr->class_name());
@@ -40,7 +39,15 @@ void GPS_TEST_PrintCounter::cleanup(Element::CleanupStage stage) {
                 click_chatter("%s: %d", ptr->name().c_str(), count);
             }
         }
+        Timestamp ts = Timestamp::now();
+        ts -= _start;
+        click_chatter("Duration: %s", ts.unparse_interval().c_str());
     }
+}
+
+int GPS_TEST_PrintCounter::initialize(ErrorHandler *) {
+    _start = Timestamp::now();
+    return 0;
 }
 
 CLICK_ENDDECLS

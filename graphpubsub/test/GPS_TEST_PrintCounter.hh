@@ -27,8 +27,12 @@ public:
 
     void cleanup(CleanupStage stage) override CLICK_COLD;
 
+    int initialize(ErrorHandler *errh) override;
+
 private:
     Vector<Element *> _elements;
+    Timestamp _start;
+
 };
 
 CLICK_ENDDECLS
