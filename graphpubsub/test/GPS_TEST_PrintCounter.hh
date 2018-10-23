@@ -8,6 +8,8 @@
 #include <click/config.h>
 #include <click/element.hh>
 #include <click/glue.hh>
+#include <click/llrpc.h>
+#include <click/timer.hh>
 
 CLICK_DECLS
 
@@ -27,12 +29,19 @@ public:
 
     void cleanup(CleanupStage stage) override CLICK_COLD;
 
-    int initialize(ErrorHandler *errh) override;
+    int initialize(ErrorHandler *errh) override CLICK_COLD;
+
+    void run_timer(Timer *timer) override;
 
 private:
     Vector<Element *> _elements;
     Timestamp _start;
+    click_llrpc_counts_st _cs;
+    Timestamp _interval;
+    Timer _timer;
+    int _counter;
 
+    void printCounts();
 };
 
 CLICK_ENDDECLS
