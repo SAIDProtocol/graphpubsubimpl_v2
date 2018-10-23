@@ -9,7 +9,7 @@
 
 CLICK_DECLS
 
-GPS_TEST_PrintCounter::GPS_TEST_PrintCounter() : _cs(), _timer(this) {
+GPS_TEST_PrintCounter::GPS_TEST_PrintCounter() : _cs(), _timer(this), _counter(0) {
     _cs.n = 2;
     _cs.keys[0] = 0;
     _cs.keys[1] = 1;
