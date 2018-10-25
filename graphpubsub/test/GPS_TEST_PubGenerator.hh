@@ -32,6 +32,8 @@ public:
 
     int configure(Vector<String> &conf, ErrorHandler *errh) override CLICK_COLD;
 
+    void add_handlers() override CLICK_COLD;
+
     void run_timer(Timer *timer) override;
 
     Packet *pull(int port) override;
@@ -52,6 +54,8 @@ private:
     Packet *generateGuidPacket();
 
     WritablePacket *setCount(WritablePacket *p);
+
+    static int getPacketCountHandler(const String &s, Element *e, void *vparam, ErrorHandler *);
 };
 
 CLICK_ENDDECLS

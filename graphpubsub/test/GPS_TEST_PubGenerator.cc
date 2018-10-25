@@ -115,6 +115,10 @@ int GPS_TEST_PubGenerator::initialize(ErrorHandler *errh) {
     return 0;
 }
 
+void GPS_TEST_PubGenerator::add_handlers() {
+    add_data_handlers("packetCount", Handler::f_read, &_pktCnt);
+}
+
 CLICK_ENDDECLS
 
 EXPORT_ELEMENT(GPS_TEST_PubGenerator)
