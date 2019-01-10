@@ -13,8 +13,8 @@ int main() {
 //    print_all_devices();
 //    print_dev_net("eno1");
 //    capture_one_packet("vlan259");
-//    capture_dev("vlan259", -1, "");
-    relay_dev("eno2", -1, "", "eno1");
+    capture_dev("vlan259", -1, "");
+//    relay_dev("eno2", -1, "", "eno1");
     return 0;
 
 }
