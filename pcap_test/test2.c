@@ -8,7 +8,7 @@
 
 #define MIN_ETH_SIZE 14
 #define BUF_SIZE 125
-#define COUNT 4000000
+#define COUNT 32000000
 #define DEV "eth0"
 
 

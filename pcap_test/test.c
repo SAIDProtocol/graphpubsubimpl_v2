@@ -7,7 +7,7 @@
 
 #define MIN_ETH_SIZE 14
 #define BUF_SIZE 125
-#define DURATION 5
+#define DURATION 40
 #define DEV "eth0"
 
 int v = 1;

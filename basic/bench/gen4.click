@@ -4,14 +4,14 @@
 require(basictest)
 
 gen::BASIC_PubGenerator(ec:0d:9a:7e:90:c6, ec:0d:9a:7e:91:96, 125, 0x27c1)
-    -> uq::BandwidthRatedUnqueue(800Mbps)
+    -> uq::BandwidthRatedUnqueue(750Mbps)
     -> q::ThreadSafeQueue(65536)
     -> cnt1::Counter
     -> td::ToDevice($dev);
 
 q[1]
     -> cnt2::Counter
-    -> Discard;
+    -> dis::Discard;
 
 DriverManager(
     wait $d,
@@ -21,4 +21,4 @@ DriverManager(
     stop
 );
 
-StaticThreadSched(gen 0, uq 1);
+//StaticThreadSched(uq 0, td 1, dis 2);

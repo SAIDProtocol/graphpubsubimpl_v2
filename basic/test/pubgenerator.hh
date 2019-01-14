@@ -8,6 +8,8 @@
 #include <click/config.h>
 #include <click/element.hh>
 #include <click/glue.hh>
+#include <time.h>
+
 
 CLICK_DECLS
 
@@ -29,9 +31,13 @@ public:
 
     Packet *pull(int port) override;
 
+    int initialize(ErrorHandler *errh) override CLICK_COLD;
+
 private:
     Packet *_pkt;
     uint64_t _pktCount;
+    uint64_t _reqCount;
+    struct timespec _start, _end;
 };
 
 CLICK_ENDDECLS
