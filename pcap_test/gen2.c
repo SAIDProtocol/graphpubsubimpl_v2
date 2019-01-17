@@ -2,19 +2,27 @@
 #include <pcap/pcap.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
 
 #define MIN_ETH_SIZE 14
 #define BUF_SIZE 125
-#define COUNT 32000000
 #define DEV "eth0"
 
+uint64_t count = 0;
 
-int main() {
+int main(int argc, char **argv) {
     const char *dev = DEV;
     int i;
+
+    if (argc < 2) {
+        printf("usage: %s %s\n", argv[0], "%count%");
+        return 1;
+    }
+    count = atoll(argv[1]);
+
 
     assert(BUF_SIZE >= MIN_ETH_SIZE);
 
@@ -35,13 +43,13 @@ int main() {
     struct timespec start, end;
 
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-    for (i = 0; i < COUNT; i++) {
+    for (i = 0; i < count; i++) {
         pcap_inject(pcap, buf, BUF_SIZE);
     }
     clock_gettime(CLOCK_MONOTONIC_RAW, &end);
 
     uint64_t delta_ns = (end.tv_sec - start.tv_sec) * 1000000000 + (end.tv_nsec - start.tv_nsec);
-    printf("took: %luns\n", delta_ns);
+    printf("took: %lu ns\n", delta_ns);
 
 
 

@@ -2,26 +2,35 @@
 #include <pcap/pcap.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 #define MIN_ETH_SIZE 14
 #define BUF_SIZE 125
-#define DURATION 40
+//#define DURATION 40
 #define DEV "eth0"
 
 int v = 1;
+int duration = 0;
 
 void *wait_and_stop(void *pram) {
-    usleep(DURATION * 1000 * 1000);
+    usleep(duration * 1000 * 1000);
     v = 0;
     return NULL;
 }
 
 
-int main() {
+int main(int argc, char **argv) {
     const char *dev = DEV;
     int i;
+
+    if (argc < 2) {
+        printf("usage: %s %s\n", argv[0], "%duration%");
+        return 1;
+    }
+    duration = atoi(argv[1]);
+
 
     assert(BUF_SIZE >= MIN_ETH_SIZE);
 

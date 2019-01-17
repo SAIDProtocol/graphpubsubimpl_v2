@@ -10,6 +10,9 @@
 
 CLICK_DECLS
 
+#define USE_COUNT
+
+
 PubGenerator::PubGenerator() : _pkt(nullptr), _pktCount(0) {}
 
 PubGenerator::~PubGenerator() {
@@ -20,11 +23,13 @@ PubGenerator::~PubGenerator() {
 
 Packet *PubGenerator::pull(int) {
     _pktCount++;
-//    if (_pktCount == _reqCount) {
-//        clock_gettime(CLOCK_MONOTONIC_RAW, &_end);
-//        uint64_t delta_ns = (_end.tv_sec - _start.tv_sec) * 1000000000 + (_end.tv_nsec - _start.tv_nsec);
-//        click_chatter("took: %luns", delta_ns);
-//    }
+#ifdef USE_COUNT
+    if (_pktCount == _reqCount) {
+        clock_gettime(CLOCK_MONOTONIC_RAW, &_end);
+        uint64_t delta_ns = (_end.tv_sec - _start.tv_sec) * 1000000000 + (_end.tv_nsec - _start.tv_nsec);
+        click_chatter("took: %luns", delta_ns);
+    }
+#endif
     return _pkt->clone();
 }
 
@@ -41,6 +46,9 @@ int PubGenerator::configure(Vector<String> &conf, ErrorHandler *errh) {
                 .read_p("COUNT", _reqCount)
                 .complete() < 0)
         return -1;
+#ifdef USE_COUNT
+	errh->debug("count=%" PRIu64, _reqCount);
+#endif
 
 
     if (size < sizeof(click_ether)) {
