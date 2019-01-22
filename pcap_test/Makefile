@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-O3
-OBJS=gen1 gen2 sink
+OBJS=gen1 gen2 sink fwd1
 LDFLAGS=-lpcap -lpthread
 
 all: $(OBJS)

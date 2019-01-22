@@ -12,7 +12,9 @@
 
 CLICK_DECLS
 
+#ifndef LISTEN_DURATION
 #define LISTEN_DURATION (65536)
+#endif
 
 class CountedSink : public Element {
 public:
